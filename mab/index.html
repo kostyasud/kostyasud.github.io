@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>МАБ — прототип</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+<style>
+  :root {
+    --navy: #283c64;
+    --navy-2: #234173;
+    --blue: #5582d7;
+    --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 400 16px/1.5 Montserrat, "Century Gothic", sans-serif; color: var(--navy); background: var(--white); }
+  a { color: inherit; text-decoration: none; }
+  button, input, select { font: inherit; color: inherit; }
+  header { background: var(--navy); color: var(--white); }
+  .wrap { width: min(1100px, calc(100% - 40px)); margin: 0 auto; }
+  .top, .bar, .foot { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; padding: 12px 0; }
+  .top, .bar { justify-content: space-between; }
+  .top { font-size: 14px; border-bottom: 1px solid rgba(255,255,255,.25); }
+  .top a { color: var(--white); }
+  .top-side { display: flex; gap: 16px; align-items: center; margin-left: auto; }
+  .icon { display: inline-flex; width: 20px; height: 20px; }
+  .icon svg { display: block; width: 20px; height: 20px; }
+  .logo { font-weight: 700; letter-spacing: .08em; margin-right: auto; }
+  nav.main { display: flex; gap: 4px 18px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
+  .menu { position: relative; }
+  .menu > a { display: inline-block; padding: 8px 0; }
+  nav.main a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; }
+  .drop { display: none; position: absolute; top: 100%; right: 0; min-width: 260px; background: var(--white); color: var(--navy); border: 1px solid var(--blue); padding: 8px; z-index: 5; }
+  .menu:hover .drop, .menu:focus-within .drop, .menu.open .drop { display: block; }
+  .drop a { display: block; padding: 6px 8px; }
+  .drop a:hover { background: #eef3fb; }
+  .drop .col-title { padding: 8px 8px 2px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--blue); }
+  .drop.wide { display: none; min-width: 460px; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .menu:hover .drop.wide, .menu:focus-within .drop.wide, .menu.open .drop.wide { display: grid; }
+  main { padding: 28px 0 48px; }
+  .layout { display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: start; }
+  .struct { border: 1px solid var(--blue); padding: 8px; position: sticky; top: 12px; }
+  .struct a { display: block; padding: 7px 8px; }
+  .struct a[aria-current="page"] { background: var(--navy); color: var(--white); }
+  h1, h2 { font-weight: 700; margin: 0 0 16px; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 26px; }
+  .domain { margin: 0 0 8px; color: var(--blue); font-size: 13px; }
+  .block { border: 1px solid var(--blue); padding: 20px; margin: 0 0 20px; }
+  .block h3 { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--blue); }
+  .block p { margin: 0 0 8px; }
+  .block p:last-child { margin: 0; }
+  .actions, .cards, .people { display: grid; gap: 12px; }
+  .actions { grid-template-columns: repeat(3, 1fr); }
+  .actions a, .cards article, .people article { border: 1px solid var(--blue); padding: 16px; display: block; }
+  .cards { grid-template-columns: repeat(3, 1fr); }
+  .people { grid-template-columns: 1fr 1fr; }
+  .photo { width: 72px; height: 72px; border: 1px solid var(--blue); display: grid; place-items: center; font-size: 12px; color: var(--blue); margin-bottom: 8px; }
+  .portrait { width: 96px; height: 120px; object-fit: cover; object-position: top; display: block; margin-bottom: 8px; border: 1px solid var(--blue); }
+  .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .gallery img, .scheme { width: 100%; display: block; }
+  .review-shot, .park-shot { width: min(280px, 100%); height: auto; display: block; }
+  .gallery img { height: 140px; object-fit: cover; }
+  .nav-toggle { display: none; background: transparent; color: var(--white); border-color: rgba(255,255,255,.7); }
+  .cards img { width: 100%; height: 160px; object-fit: cover; background: #eef3fb; display: block; margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid var(--blue); padding: 8px; text-align: left; vertical-align: top; }
+  th { font-weight: 700; }
+  form { display: grid; gap: 8px; max-width: 460px; }
+  input, select { border: 1px solid var(--navy); padding: 8px; background: var(--white); }
+  button, .btn { border: 1px solid var(--navy); background: var(--navy); color: var(--white); padding: 10px 14px; cursor: pointer; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tabs button { background: var(--white); color: var(--navy); }
+  .links { display: grid; gap: 8px; }
+  .links a { border: 1px solid var(--blue); padding: 12px 16px; }
+  footer { background: var(--navy); color: #fff; margin-top: 48px; }
+  .foot { display: block; padding: 40px 0 28px; }
+  .foot-top { display: grid; grid-template-columns: minmax(200px, 260px) minmax(220px, 1fr) minmax(240px, 320px); gap: 28px 40px; align-items: start; }
+  .foot h2 { margin: 0 0 16px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
+  .contacts p, .contacts > a { margin: 0; display: block; padding: 3px 0; color: #fff; }
+  .contacts .place { margin-bottom: 8px; }
+  .messengers { display: flex; gap: 12px; margin-top: 14px; }
+  .messengers a { color: #fff; }
+  .docs a, .doc-board a { display: block; padding: 3px 0; }
+  .docs .all-docs { margin-top: 12px; color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+  .doc-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .foot .group b { display: block; margin-bottom: 8px; }
+  .docs a { display: block; padding: 3px 0; color: #fff; font-size: 14px; line-height: 1.35; }
+  .docs a:hover, .contacts a:hover { color: var(--blue); }
+  .foot-legal { margin: 0; padding: 0; border: 0; max-width: none; font-size: 14px; line-height: 1.4; }
+  .foot-legal a { display: block; margin-top: 12px; color: #fff; }
+  .foot-legal a:hover { color: var(--blue); }
+  .foot-legal p { margin: 0; }
+  .foot-legal b { display: block; margin-bottom: 4px; }
+  .toast { position: fixed; right: 16px; bottom: 16px; background: var(--white); color: var(--navy); border: 1px solid var(--navy); padding: 12px 14px; }
+  @media (max-width: 800px) {
+    .layout, .actions, .cards, .people, .drop.wide { grid-template-columns: 1fr; }
+    .foot-top, .foot-legal, .doc-board, .gallery { grid-template-columns: 1fr; }
+    .nav-toggle { display: inline-block; }
+    nav.main { display: none; flex-basis: 100%; flex-direction: column; align-items: flex-start; }
+    nav.main.open { display: flex; }
+    .drop, .drop.wide { position: static; min-width: 0; width: 100%; }
+    .menu:hover .drop, .menu:focus-within .drop, .menu:hover .drop.wide, .menu:focus-within .drop.wide { display: none; }
+    .menu.open .drop { display: block; }
+    .menu.open .drop.wide { display: grid; }
+    .struct { position: static; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <span>Сокол, Ленинградский проспект, 80/17</span>
+    <div class="top-side">
+      <a href="tel:+74951562526">Клуб +7&nbsp;495&nbsp;156-25-26</a>
+      <a href="tel:+74952554249">Школа +7&nbsp;495&nbsp;255-42-49</a>
+      <a class="icon" href="https://t.me/+79661667473" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.5 4.4 2.7 11.2c-1.2.5-1.2 1.1-.2 1.4l4.8 1.5 11.1-7c.5-.3 1-.1.6.3l-9 8.2-.3 4.6c.4 0 .6-.2.9-.4l2.2-2.1 4.6 3.4c.8.5 1.5.2 1.7-.8l3-14.3c.3-1.2-.5-1.8-1.6-1.4z"/></svg>
+      </a>
+      <a class="icon" href="https://api.whatsapp.com/send?phone=79661667473" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="wrap bar">
+    <a class="logo" href="#/">МАБ</a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false">Меню</button>
+    <nav class="main" id="nav"></nav>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<footer>
+  <div class="wrap foot">
+    <div class="foot-top">
+      <section class="contacts">
+        <h2>Контакты</h2>
+        <p class="place">Ленинградский проспект, 80/17</p>
+        <a href="tel:+74951562526">Клуб +7&nbsp;495&nbsp;156-25-26</a>
+        <a href="tel:+74952554249">Школа +7&nbsp;495&nbsp;255-42-49</a>
+        <a href="mailto:sale@billiardmsk.ru">sale@billiardmsk.ru</a>
+        <div class="messengers">
+          <a class="icon" href="https://t.me/+79661667473" aria-label="Telegram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.5 4.4 2.7 11.2c-1.2.5-1.2 1.1-.2 1.4l4.8 1.5 11.1-7c.5-.3 1-.1.6.3l-9 8.2-.3 4.6c.4 0 .6-.2.9-.4l2.2-2.1 4.6 3.4c.8.5 1.5.2 1.7-.8l3-14.3c.3-1.2-.5-1.8-1.6-1.4z"/></svg>
+          </a>
+          <a class="icon" href="https://api.whatsapp.com/send?phone=79661667473" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </section>
+      <section>
+        <h2>Документы</h2>
+        <div class="docs" id="foot-docs"></div>
+      </section>
+      <section class="foot-legal" id="foot-legal"></section>
+    </div>
+  </div>
+</footer>
+<script>
+const rub = n => new Intl.NumberFormat("ru-RU").format(n) + "\u00a0₽";
+const pair = (a, b) => new Intl.NumberFormat("ru-RU").format(a) + " / " + new Intl.NumberFormat("ru-RU").format(b);
+
+const NAV = [
+  { id: "school", title: "Школа", href: "/shkola", match: ["/shkola", "/detskaya", "/oplata"], columns: [
+    ["Взрослая", [["Обзор", "/shkola/vzroslaya"], ["Тренировки", "/shkola/vzroslaya/trenirovki"], ["Корпоративное обучение", "/shkola/vzroslaya/korporativnoe-obuchenie"], ["Тарифы и расписание", "/shkola/vzroslaya/tarify"], ["Сертификаты", "/shkola/vzroslaya/sertifikaty"], ["Тренерский состав", "/shkola/vzroslaya/trenery"], ["Отзывы", "/shkola/vzroslaya/otzyvy"], ["Оплата", "/oplata"]]],
+    ["Детская", [["Обзор", "/detskaya"], ["Бесплатное спортивное", "/detskaya/besplatnoe"], ["Платное направление", "/detskaya/platnoe"], ["Тренерский состав", "/detskaya/trenery"], ["Расписание и стоимость", "/detskaya/raspisanie"]]]
+  ]},
+  { id: "tournaments", title: "Турниры", href: "/turniry", match: ["/turniry"], links: [["Календарь", "/turniry"], ["МАБплей", "https://mabplay.ru/"], ["Рейтинг", "/turniry/rejting"]] },
+  { id: "trips", title: "Выезды", href: "/vyezdy", match: ["/vyezdy"], links: [["Обзор", "/vyezdy"], ["Ближайшие", "/vyezdy/blizhajshie"], ["Сезон", "/vyezdy/sezon"], ["Детские лагеря", "/vyezdy/lagerya"], ["Архив", "/vyezdy/arhiv"]] },
+  { id: "club", title: "Клуб", href: "/klub", match: ["/klub"], links: [["Обзор", "/klub"], ["Бронь", "/klub/bron"], ["Залы", "/klub/zaly"], ["Цены", "/klub/ceny"], ["Ресторан", "/klub/restoran"], ["Праздники", "/klub/prazdniki"], ["Как добраться", "/klub/kak-dobratsya"], ["Правила", "/klub/pravila"]] },
+  { id: "franchise", title: "Франшиза", href: "/franshiza", match: ["/franshiza"], links: [["Обзор", "/franshiza"], ["Клуб", "/franshiza/klub"], ["Школа", "/franshiza/shkola"], ["Заявка", "/franshiza/zayavka"]] },
+  { id: "online", title: "Онлайн", href: "/online", match: ["/online"], links: [["Обзор", "/online"], ["Основы", "/online/osnovy"], ["Свояки", "/online/svoyaki"], ["Резка", "/online/rezka"]] },
+  { id: "shop", title: "Магазин", href: "/magazin", match: ["/magazin"], links: [["Каталог", "/magazin"], ["Кии", "/magazin/kii"], ["Столы", "/magazin/stoly"], ["Аксессуары", "/magazin/aksessuary"], ["Чехлы и тубусы", "/magazin/tubusy"], ["Доставка", "/magazin/dostavka"], ["Кабинет", "/magazin/kabinet"]] },
+  { id: "association", title: "Ассоциация", href: "/associaciya", match: ["/associaciya"], links: [["Обзор", "/associaciya"], ["Игроки", "/associaciya/igroki"], ["Тренеры", "/associaciya/trenery"], ["Бильярдные клубы", "/associaciya/kluby"], ["Компании", "/associaciya/kompanii"]] }
+];
+
+const SIDE = {
+  adult: ["Взрослая школа", [["Обзор", "/shkola/vzroslaya"], ["Тренировки", "/shkola/vzroslaya/trenirovki"], ["Корпоративное обучение", "/shkola/vzroslaya/korporativnoe-obuchenie"], ["Тарифы и расписание", "/shkola/vzroslaya/tarify"], ["Сертификаты", "/shkola/vzroslaya/sertifikaty"], ["Тренерский состав", "/shkola/vzroslaya/trenery"], ["Отзывы", "/shkola/vzroslaya/otzyvy"], ["Оплата", "/oplata"]]],
+  kids: ["Детская школа", [["Обзор", "/detskaya"], ["Бесплатное спортивное", "/detskaya/besplatnoe"], ["Платное направление", "/detskaya/platnoe"], ["Тренерский состав", "/detskaya/trenery"], ["Расписание и стоимость", "/detskaya/raspisanie"]]],
+  tournaments: ["Турниры", [["Календарь", "/turniry"], ["МАБплей", "https://mabplay.ru/"], ["Рейтинг", "/turniry/rejting"]]],
+  trips: ["Выезды", [["Обзор", "/vyezdy"], ["Ближайшие", "/vyezdy/blizhajshie"], ["Сезон", "/vyezdy/sezon"], ["Детские лагеря", "/vyezdy/lagerya"], ["Архив", "/vyezdy/arhiv"]]],
+  club: ["Клуб", [["Обзор", "/klub"], ["Бронь", "/klub/bron"], ["Залы", "/klub/zaly"], ["Цены", "/klub/ceny"], ["Ресторан", "/klub/restoran"], ["Праздники", "/klub/prazdniki"], ["Как добраться", "/klub/kak-dobratsya"], ["Правила", "/klub/pravila"]]],
+  franchise: ["Франшиза", [["Обзор", "/franshiza"], ["Клуб", "/franshiza/klub"], ["Школа", "/franshiza/shkola"], ["Заявка", "/franshiza/zayavka"]]],
+  online: ["Онлайн", [["Обзор", "/online"], ["Основы", "/online/osnovy"], ["Свояки", "/online/svoyaki"], ["Резка", "/online/rezka"]]],
+  shop: ["Магазин", [["Каталог", "/magazin"], ["Кии", "/magazin/kii"], ["Столы", "/magazin/stoly"], ["Аксессуары", "/magazin/aksessuary"], ["Чехлы и тубусы", "/magazin/tubusy"], ["Доставка", "/magazin/dostavka"], ["Кабинет", "/magazin/kabinet"]]],
+  association: ["Ассоциация", [["Обзор", "/associaciya"], ["Игроки", "/associaciya/igroki"], ["Тренеры", "/associaciya/trenery"], ["Бильярдные клубы", "/associaciya/kluby"], ["Компании", "/associaciya/kompanii"]]]
+};
+
+const ALIAS = {
+  "/school": "/shkola",
+  "/adult": "/shkola/vzroslaya",
+  "/adult/train": "/shkola/vzroslaya/trenirovki",
+  "/adult/corp": "/shkola/vzroslaya/korporativnoe-obuchenie",
+  "/adult/schedule": "/shkola/vzroslaya/tarify",
+  "/adult/prices": "/shkola/vzroslaya/tarify",
+  "/adult/cert": "/shkola/vzroslaya/sertifikaty",
+  "/adult/coaches": "/shkola/vzroslaya/trenery",
+  "/kids": "/detskaya",
+  "/kids/free": "/detskaya/besplatnoe",
+  "/kids/paid": "/detskaya/platnoe",
+  "/kids/coaches": "/detskaya/trenery",
+  "/kids/schedule": "/detskaya/raspisanie",
+  "/kids/prices": "/detskaya/raspisanie",
+  "/tournaments": "/turniry",
+  "/tournaments/mabplay": "/mabplay",
+  "/tournaments/rating": "/turniry/rejting",
+  "/tournaments/sunday": "/turniry",
+  "/tournaments/weekday": "/turniry",
+  "/tournaments/prize": "/turniry",
+  "/trips": "/vyezdy",
+  "/trips/next": "/vyezdy/blizhajshie",
+  "/trips/season": "/vyezdy/sezon",
+  "/trips/camps": "/vyezdy/lagerya",
+  "/trips/archive": "/vyezdy/arhiv",
+  "/club": "/klub",
+  "/club/book": "/klub/bron",
+  "/club/halls": "/klub/zaly",
+  "/club/prices": "/klub/ceny",
+  "/club/restaurant": "/klub/restoran",
+  "/club/events": "/klub/prazdniki",
+  "/club/route": "/klub/kak-dobratsya",
+  "/club/rules": "/klub/pravila",
+  "/franchise": "/franshiza",
+  "/franchise/club": "/franshiza/klub",
+  "/franchise/school": "/franshiza/shkola",
+  "/franchise/apply": "/franshiza/zayavka",
+  "/online/basics": "/online/osnovy",
+  "/online/svoyaki": "/online/svoyaki",
+  "/online/cut": "/online/rezka",
+  "/online/book": "/online",
+  "/online/list": "/online",
+  "/shop": "/magazin",
+  "/shop/cues": "/magazin/kii",
+  "/shop/tables": "/magazin/stoly",
+  "/shop/accessories": "/magazin/aksessuary",
+  "/shop/cases": "/magazin/tubusy",
+  "/shop/delivery": "/magazin/dostavka",
+  "/shop/account": "/magazin/kabinet",
+  "/association": "/associaciya",
+  "/association/players": "/associaciya/igroki",
+  "/association/coaches": "/associaciya/trenery",
+  "/association/clubs": "/associaciya/kluby",
+  "/association/partners": "/associaciya/kompanii",
+  "/association/athletes": "/associaciya/igroki",
+  "/reviews": "/shkola/vzroslaya/otzyvy",
+  "/oplata": "/oplata"
+};
+
+function path() {
+  const raw = location.hash.replace(/^#/, "") || "/";
+  const clean = raw.startsWith("/") ? raw : "/" + raw;
+  return ALIAS[clean] || clean;
+}
+function linkHref(href) {
+  return href.startsWith("http") ? href : "#" + href;
+}
+function block(title, html) {
+  return `<section class="block"><h3>${title}</h3>${html || ""}</section>`;
+}
+function table(headers, rows) {
+  return `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function form(title, fields) {
+  const fieldsHtml = fields.map(name => `<input required placeholder="${name}" aria-label="${name}">`).join("");
+  return block(title, `<form data-form>${fieldsHtml}<button type="submit">Отправить</button></form>`);
+}
+function frame(sideId, domain, html) {
+  const [title, links] = SIDE[sideId];
+  const here = path();
+  const nav = links.map(([name, href]) => `<a href="${linkHref(href)}"${here === href ? ' aria-current="page"' : ""}>${name}</a>`).join("");
+  return `<div class="layout"><nav class="struct" aria-label="${title}">${nav}</nav><div><p class="domain">${domain}</p>${html}</div></div>`;
+}
+function person(name, role, lines, photo) {
+  const pic = photo ? `<img class="portrait" alt="${name}" src="${photo}">` : `<div class="photo">Фото</div>`;
+  return `<article>${pic}<b>${name}</b><p>${role}</p>${lines.map(line => `<p>${line}</p>`).join("")}</article>`;
+}
+function gallery(urls) {
+  return `<div class="gallery">${urls.map(src => `<img alt="" src="${src}">`).join("")}</div>`;
+}
+const handbook = block("Методичка", "<p>10 тем для начинающих и рабочая тетрадь. Электронный файл, ссылка приходит на почту.</p><p>Полный цикл «Основы», «Свояки», «Резка» — " + rub(2900) + ".</p><p>Лайт «Основы русского бильярда» — " + rub(1600) + ". Лайт «Свояки» — " + rub(1600) + ".</p>");
+const checklist = block("Чек-лист «Алгоритм при игре свояков»", "<p>PDF: 6 вопросов и 7 практических ситуаций. " + rub(790) + ".</p>") + form("Купить чек-лист", ["Имя", "Почта", "Телефон"]);
+
+const DOC_GROUPS = [
+  ["school", "Школа", [
+    ["Политика конфиденциальности", "https://billiardmsk.ru/pravovye-dokumenty/#politika"],
+    ["Согласие на обработку персональных данных", "https://billiardmsk.ru/pravovye-dokumenty/#soglasie"],
+    ["Договор оферты", "https://billiardmsk.ru/pravovye-dokumenty/#oferta"],
+    ["Оферта на товары", "https://billiardmsk.ru/pravovye-dokumenty/#oferta_tovary"],
+    ["Свидетельство о регистрации товарного знака", "https://billiardmsk.ru/pravovye-dokumenty/"]
+  ]],
+  ["kids", "Детская школа", [
+    ["Оферта платной школы", "https://kids.billiardmsk.ru/wp-content/uploads/2026/11/oferta-platnaya-kids-mab-v3-2026-11-13.pdf"],
+    ["Согласие на обработку персональных данных", "https://kids.billiardmsk.ru/wp-content/uploads/2026/11/soglasie-pdn-platnaya-kids-mab-2026-11-13.pdf"],
+    ["Согласие на фото- и видеосъёмку", "https://kids.billiardmsk.ru/wp-content/uploads/2026/11/soglasie-foto-video-platnaya-kids-mab-2026-11-13.pdf"],
+    ["Договор бесплатной детской школы", "https://kids.billiardmsk.ru/wp-content/uploads/2026/11/%D0%94%D0%BE%D0%B3%D0%BE%D0%B2%D0%BE%D1%80_%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%B0%D1%8F_%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D1%88%D0%BA%D0%BE%D0%BB%D0%B0_%D0%9C%D0%90%D0%91_2026-11-13.pdf"]
+  ]],
+  ["club", "Клуб", [
+    ["Политика конфиденциальности", "https://club.billiardmsk.ru/policy/"],
+    ["Условия использования", "https://club.billiardmsk.ru/policy/#terms"],
+    ["Правила посещения и бронирования", "https://club.billiardmsk.ru/policy#rules"]
+  ]],
+  ["trips", "Выезды", [
+    ["Политика конфиденциальности", "https://billiardmsk.ru/wp-content/themes/billiard/assets/vyezdy/docs/politika-personalnyh-dannyh.html"],
+    ["Согласие на обработку персональных данных", "https://billiardmsk.ru/wp-content/themes/billiard/assets/vyezdy/docs/soglasie-na-obrabotku-personalnyh-dannyh.html"],
+    ["Оферта на выезд", "https://billiardmsk.ru/wp-content/themes/billiard/assets/vyezdy/docs/oferta.html"],
+    ["Условия отмены и возврата", "https://billiardmsk.ru/wp-content/themes/billiard/assets/vyezdy/docs/usloviya-otmeny-i-vozvrata.html"]
+  ]],
+  ["shop", "Магазин", [
+    ["Публичная оферта", "https://shop.billiardmsk.ru/index.php?route=information/information&information_id=4"],
+    ["Согласие на обработку персональных данных", "https://shop.billiardmsk.ru/index.php?route=information/information&information_id=3"],
+    ["Политика обработки персональных данных", "https://shop.billiardmsk.ru/index.php?route=information/information&information_id=5"],
+    ["Доставка и возврат", "https://shop.billiardmsk.ru/index.php?route=information/information&information_id=6"],
+    ["Возврат товара", "https://shop.billiardmsk.ru/index.php?route=account/return/add"]
+  ]]
+];
+
+function docKey(here) {
+  if (here.startsWith("/detskaya")) return "kids";
+  if (here.startsWith("/klub")) return "club";
+  if (here.startsWith("/vyezdy")) return "trips";
+  if (here.startsWith("/magazin")) return "shop";
+  if (here.startsWith("/shkola") || here.startsWith("/online")) return "school";
+  return "";
+}
+const LEGAL = [
+  ["school", "Школа и онлайн", "ИП Гладский Ярослав Дмитриевич, ИНН 773467596704, ОГРНИП 317502400004834. Московская область, Одинцово, д.&nbsp;Борки, д.&nbsp;56."],
+  ["club", "Клуб", "ООО «МАБ», ИНН 9703187687, ОГРН 1247700547577."],
+  ["trips", "Выезды", "ИП Гладская Инна Георгиевна, ИНН 773413846041, ОГРНИП 325774600396310."]
+];
+
+function mainDocs(group) {
+  const source = group || DOC_GROUPS.find(item => item[0] === "school");
+  const links = source[2];
+  const key = links.filter(([name]) => /персональн|конфиденциальн/i.test(name));
+  const rest = links.filter(item => !key.includes(item));
+  return [...key, ...rest].slice(0, 2).map(([name, href]) => `<a href="${href}">${name}</a>`).join("");
+}
+
+const pages = {
+  "/": () => `
+    <p class="domain">billiardmsk.ru</p>
+    <h1>Международная академия бильярда</h1>
+    <div class="actions">
+      <a href="#/shkola">Записаться в школу</a>
+      <a href="#/klub/bron">Забронировать стол</a>
+      <a href="#/magazin">Открыть магазин</a>
+    </div>
+    <div class="block" style="margin-top:20px"><h3>Разделы</h3><div class="links">
+      ${NAV.map(item => `<a href="#${item.href}">${item.title}</a>`).join("")}
+    </div></div>`,
+
+  "/shkola": () => `
+    <p class="domain">billiardmsk.ru/shkola/</p>
+    <h1>Школа</h1>
+    <div class="actions">
+      <a href="#/shkola/vzroslaya">Взрослая</a>
+      <a href="#/detskaya">Детская</a>
+    </div>`,
+
+  "/dokumenty": () => `
+    <p class="domain">billiardmsk.ru/dokumenty/</p>
+    <h1>Документы</h1>
+    <div class="doc-board">
+      ${DOC_GROUPS.map(group => `<section class="block"><h3>${group[1]}</h3>${group[2].map(([name, href]) => `<a href="${href}">${name}</a>`).join("")}</section>`).join("")}
+      ${LEGAL.map(([id, title, text]) => `<section class="block"><h3>${title}</h3><p>${text}</p></section>`).join("")}
+    </div>`,
+
+  "/voprosy": () => `
+    <p class="domain">Список для Ярослава. На сайт не выносится.</p>
+    <h1>Вопросы без ответа на сайтах</h1>
+    ${block("Расписание", "Заголовок тарифа «Время МАБ» говорит «до 20 человек». Строки расписания — «до 16». На страницах оставлено 16.")}
+    ${block("Столы", "Сайт клуба пишет 16 столов для русского бильярда и 6 для пула. Разбивки «11 в большом и 6 в малом» на странице нет. В прототипе 16 и 6.")}
+    ${block("Кутузовский", "В таблице расписания на сайте есть слоты БК «Кутузовский». По ответу Ярослава в прототип они не входят.")}
+    ${block("Пробное за 1 000 ₽", "На сайте всплывает «Пробное занятие 1 000 ₽ при покупке абонемента». В тарифах пробное 2 400 и 2 800 ₽. На странице оставлен тариф.")}
+    ${block("Парковка 2", "Подпись «Парковка 1» на сайте стоит перед файлом map-3.jpg. Вторую схему взял как map-2.jpg. Если это не она, поменять местами.")}
+    ${block("Магазин", "Юрлицо на сайте магазина не опубликовано.")}
+    ${block("Ассоциация", "Юрлицо и взнос на текущих сайтах не опубликованы.")}
+    ${block("Выезды", "Цена и число мест на странице не опубликованы. У фестиваля в Сочи 2025 на странице нет дня и месяца.")}
+    ${block("Доставка", "Город, срок и перевозчик на странице доставки не написаны. В магазине условия стоят в карточке товара.")}
+    ${block("Отзывы", "На страницах онлайн и турниров текстовых цитат нет. У школы четыре цитаты и снимки отзывов. У выездов опубликован снимок отзыва.")}`,
+
+  "/shkola/vzroslaya": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/", `
+    <h2>Взрослая школа</h2>
+    ${block("Пробное", "60 минут. До 17:00 — " + rub(2400) + ". После 17:00 — " + rub(2800) + ". На занятии смотрят зал, знакомятся с тренерами и пробуют русский бильярд, пул и снукер. Группа до 6 человек.")}
+    ${block("Школа", "Больше 300 постоянных учеников. Занятия для всех уровней: группа и индивидуально.")}
+    ${block("Дальше", '<div class="links"><a href="#/shkola/vzroslaya/sertifikaty">Сертификат</a><a href="#/online">Онлайн</a><a href="#/vyezdy">Выезды</a><a href="#/turniry">Турнир</a></div>')}
+    ${block("Отзывы", `
+      <p>«Если у друзей будет вопрос, где научиться играть в бильярд, то посоветую нашу Академию!» — Вера, мама Васи Дубровского, 15.09.2021</p>
+      <p>«Вижу у себя прогресс, даже с учетом того, что занимаюсь всего раз в неделю» — Андрей Рассказов, 25.08.2021</p>
+      <p>«Вижу свой прогресс. Каждое новое занятие улучшает мою технику игры» — Галина Николенко, 21.07.2021</p>
+      <p>«Отличный тренерский состав!» — Светлана Домнышева, 25.06.2021</p>
+    `)}
+    ${form("Запись", ["Имя", "Телефон"])}`),
+
+  "/shkola/vzroslaya/trenirovki": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/trenirovki/", `
+    <h2>Тренировки</h2>
+    ${table(["Формат", "Как проходит", "Разовое"], [
+      ["Группа до 6", "90 минут. Можно прийти в другую группу, если есть место.", "До 17:00\u00a0— " + rub(3000) + ". После\u00a0— " + rub(3500)],
+      ["Индивидуально", "Свой тренер. Стол включён.", "По уровню тренера"],
+      ["Парно", "Двое. Стол включён.", "По уровню тренера"],
+      ["«Время МАБ»", "Дежурный тренер. До 16 человек.", rub(2500)]
+    ])}
+    ${form("Запись", ["Имя", "Телефон", "Формат"])}`),
+
+  "/shkola/vzroslaya/korporativnoe-obuchenie": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/korporativnoe-obuchenie/", `
+    <h2>Корпоративное обучение</h2>
+    ${block("Организуем", "Занятие для команды и коллег.")}
+    ${block("Турниры", "Проводили турниры для партнёров.")}
+    ${block("Мастер-классы", "Мастер-класс и совместная игра. Серия регулярных занятий.")}
+    ${form("Заявка", ["Имя", "Телефон", "Компания"])}`),
+
+  "/shkola/vzroslaya/tarify": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/tarify/", `
+    <h2>Тарифы и расписание</h2>
+    ${block("Клуб МАБ, Сокол", "Цена в таблице — разовое занятие этого слота. Пакеты — ниже.")}
+    ${table(["День", "Занятие", "Время", "Цена"], [
+      ["Понедельник", "Группа до 6", "19:00–20:30", rub(3500)],
+      ["Понедельник", "Группа до 6", "20:40–22:10", rub(3500)],
+      ["Вторник", "«Время МАБ», до 16", "12:00–14:00", rub(2500)],
+      ["Суббота", "«Время МАБ», до 16", "10:00–12:00", rub(2500)],
+      ["Суббота", "Группа до 6", "12:00–13:30", rub(3000)]
+    ])}
+    ${block("Абонемент", "В таблицах слева дневной, справа безлимит. Дневной: пн–пт, 10:00–17:00. У Тамары Гладской и Ярослава Гладского одна цена, пакетов 10 и 30 нет.")}
+    <div class="block"><h3>Цены</h3>
+      <div class="tabs">
+        <button type="button" data-tab="ind">Индивидуально</button>
+        <button type="button" data-tab="pair">Парно</button>
+        <button type="button" data-tab="group">Группа до 6</button>
+        <button type="button" data-tab="time">«Время МАБ», до 16</button>
+      </div>
+      <div id="price-panel"></div>
+    </div>
+    ${block("Группа до 6 в других клубах", `
+      ${table(["Пакет", "Цена"], [
+        ["Пробное разовое", rub(1815)],
+        ["Разовое занятие", rub(3050)],
+        ["8 занятий, 9 недель", rub(18700)],
+        ["10 занятий, 12 недель", rub(22700)],
+        ["15 занятий, 18 недель", rub(33000)],
+        ["20 занятий, 25 недель", rub(41100)],
+        ["30 занятий, 36 недель", rub(58750)]
+      ])}
+      <p>Отмена за 24 часа без потери занятия. Стоимость стола включена.</p>
+    `)}`),
+
+  "/shkola/vzroslaya/sertifikaty": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/sertifikaty/", `
+    <h2>Сертификаты</h2>
+    ${block("Подарок", "Занятие во взрослой школе. Сумма зависит от формата и тренера. Срок и получателя указывает покупатель в заявке.")}
+    ${form("Заказ", ["Имя", "Телефон", "Почта", "Формат", "Сумма", "Срок", "Кому подарить"])}`),
+
+  "/shkola/vzroslaya/trenery": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/trenery/", `
+    <h2>Тренерский состав</h2>
+    <div class="people">
+      ${person("Ярослав Гладский", "основатель", ["Индивидуально и парно.", "1 занятие " + rub(30000) + ". Пакетов 10 и 30 нет."], "https://billiardmsk.ru/wp-content/uploads/yaroslav-gladskiy.png")}
+      ${person("Тамара Гладская", "спортивный директор", ["Индивидуально и парно.", "1 занятие " + rub(15000) + ". Пакетов 10 и 30 нет."], "https://billiardmsk.ru/wp-content/uploads/puseva_tamara.png")}
+      ${person("Алексей Соць", "главный тренер", ["Индивидуально, парно, группа.", "1 занятие " + pair(10000, 11000) + ". 10 занятий " + pair(93000, 103000) + ". 30 занятий " + pair(261000, 287000) + "."], "https://billiardmsk.ru/wp-content/uploads/photo_2026-07-08_15-47-45-e1783515137532.jpg")}
+      ${person("Алексей Чухвичёв", "премьер-тренер", ["Индивидуально, парно, группа.", "1 занятие " + pair(7300, 8500) + ". 10 занятий " + pair(68000, 79000) + ". 30 занятий " + pair(167000, 197000) + "."], "https://billiardmsk.ru/wp-content/uploads/IMG_4759-e1786435651964.webp")}
+      ${person("Андрей Голенков", "мастер-тренер", ["Индивидуально, парно, группа.", "1 занятие " + pair(6500, 7700) + ". 10 занятий " + pair(61000, 72000) + ". 30 занятий " + pair(167000, 197000) + "."], "https://billiardmsk.ru/wp-content/uploads/photo_2026-07-08_15-47-40-e1783515397617.jpg")}
+      ${person("Степан Миусов", "ведущий тренер", ["Индивидуально, парно, группа.", "1 занятие " + pair(5500, 6700) + ". 10 занятий " + pair(51000, 62000) + ". 30 занятий " + pair(143000, 173000) + "."], "https://billiardmsk.ru/wp-content/uploads/photo_2026-07-08_12-20-32-e1783586084918.jpg")}
+    </div>`),
+
+  "/shkola/vzroslaya/otzyvy": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/otzyvy/", `
+    <h2>Отзывы</h2>
+    ${block("Текстом на сайте", `
+      <p>«Если у друзей будет вопрос, где научиться играть в бильярд, то посоветую нашу Академию!» — Вера, мама Васи Дубровского, 15.09.2021</p>
+      <p>«Вижу у себя прогресс, даже с учетом того, что занимаюсь всего раз в неделю» — Андрей Рассказов, 25.08.2021</p>
+      <p>«Вижу свой прогресс. Каждое новое занятие улучшает мою технику игры» — Галина Николенко, 21.07.2021</p>
+      <p>«Отличный тренерский состав!» — Светлана Домнышева, 25.06.2021</p>
+    `)}
+    ${block("Снимки отзывов", gallery(["reviews_02.png","reviews_03.png","reviews_05.jpg","reviews_06.jpg","reviews_07.jpg","reviews_08.png","reviews_09.jpg","reviews_010.jpg","reviews_011.jpg","reviews_012.jpg"].map(name => "https://billiardmsk.ru/wp-content/uploads/" + name)))}`),
+
+  "/oplata": () => frame("adult", "billiardmsk.ru/oplata/", `
+    <h2>Оплата</h2>
+    ${block("Газпромбанк", "Платежи идут через Газпромбанк. Карты Visa и MasterCard, 3D-Secure: Verified by VISA и MasterCard SecureCode. Данные карты обрабатывает банк-эквайер, сертифицированный по PCI DSS.")}
+    ${block("Как платить", "Сайт переводит на страницу банка. Реквизиты карты вводятся там. Если банк просит одноразовый пароль, после карты открывается страница банка-эмитента. Затем можно вернуться в личный кабинет.")}
+    ${block("Возврат", "Деньги возвращаются только на карту, с которой прошла оплата.")}
+    ${block("Претензии", "billiardmsk@gmail.com")}
+    ${block("Реквизиты", "ИП Гладский Ярослав Дмитриевич, ИНН 773467596704, ОГРНИП 317502400004834. Банк ТОЧКА ПАО БАНКА «ФК ОТКРЫТИЕ», р/с 40802810901500209325, БИК 044525999, к/с 30101810845250000999, Москва.")}`),
+
+  "/detskaya": () => frame("kids", "kids.billiardmsk.ru/", `
+    <h2>Детская школа</h2>
+    ${block("Возраст", "7–18 лет")}
+    ${block("Пробное", "Понедельник, 16:00, клуб МАБ")}
+    ${block("Путь", "Знакомимся. Осваиваем. Наблюдаем. Отбираем.")}
+    ${block("Программа", "Начальное обучение, от 7 лет. Начальная спортивная подготовка, от 9 лет. Специализация, от 12 лет. Совершенствование.")}
+    ${block("Два направления", "Платная детская школа. Бесплатная спортивная школа после отбора.")}
+    ${block("Почему выбирают", "Внимание, логика и точность. Подготовка к турнирам и разрядам. Дневник занятий. Горячее питание. Открытые уроки для родителей. Новые друзья и спортивная атмосфера.")}
+    ${block("Открытые уроки", "Родители смотрят, как занимается ребёнок.")}
+    ${block("Тарифы на месяц", `
+      ${table(["Тариф", "В неделю", "Цена"], [["Стандарт", "1 раз", rub(9900)], ["Интенсив", "2 раза", rub(16900)], ["Профессионал", "3 раза", rub(21900)]])}
+      <p><a href="#/detskaya/raspisanie">Расписание</a></p>
+    `)}
+    ${block("Рядом с чемпионами", "Александр Молчанов, спортсмен МАБ. Чемпион мира, мастер спорта. Дети видят тренировки в клубе и встречаются с ним на общих мероприятиях.")}
+    ${block("Фотогалерея", gallery(["g1.png","g2.png","g3.png","g4.png","g5.png","g6.png","g7.png","IMG_3436.jpg","IMG_3435.jpg","IMG_3440.jpg","IMG_3438.jpg","IMG_3443.jpg","IMG_3439.jpg","IMG_3437.jpg"].map(name => "https://kids.billiardmsk.ru/wp-content/uploads/kids-unified-2026-11-15/assets/" + name)))}
+    ${form("Запись", ["Имя родителя", "Возраст ребёнка", "Телефон"])}`),
+
+  "/detskaya/besplatnoe": () => frame("kids", "kids.billiardmsk.ru/besplatnoe/", `
+    <h2>Бесплатное спортивное направление</h2>
+    ${block("Тренер", "Алексей Соць. Зачисление после отбора.")}
+    ${table(["Когда", "Время", "Цена"], [["Вторник и четверг", "15:30–17:30", "бесплатно"], ["Суббота", "11:30–13:30", "бесплатно"]])}
+    ${form("Запись", ["Имя родителя", "Возраст ребёнка", "Телефон"])}`),
+
+  "/detskaya/platnoe": () => frame("kids", "kids.billiardmsk.ru/platnoe/", `
+    <h2>Платное направление</h2>
+    ${block("Тренер", "Алексей Чухвичёв")}
+    ${block("В цене", "Стол, оборудование, горячее питание, турниры школы, карта прогресса и дневник занятий.")}
+    ${table(["Тариф", "В неделю", "Цена"], [["Стандарт", "1 раз", rub(9900)], ["Интенсив", "2 раза", rub(16900)], ["Профессионал", "3 раза", rub(21900)]])}
+    ${form("Пробное: понедельник, 16:00", ["Имя родителя", "Возраст ребёнка", "Телефон"])}`),
+
+  "/detskaya/trenery": () => frame("kids", "kids.billiardmsk.ru/trenery/", `
+    <h2>Тренерский состав</h2>
+    <div class="people">
+      ${person("Тамара Гладская", "спортивный директор", ["Детская школа."], "https://kids.billiardmsk.ru/wp-content/uploads/kids-unified-2026-11-15/assets/tamara-gladskaya.png")}
+      ${person("Алексей Соць", "главный тренер", ["Дипломированный тренер. Кандидат в мастера спорта. Спортивный психолог. Опыт 20 лет. Бесплатное направление после отбора."], "https://kids.billiardmsk.ru/wp-content/uploads/kids-unified-2026-11-15/assets/alexey-sots.jpg")}
+      ${person("Алексей Чухвичёв", "тренер детской школы", ["Дипломированный тренер. Русский бильярд и пул. Игровой стаж 20 лет, тренерский 10 лет."], "https://kids.billiardmsk.ru/wp-content/uploads/kids-unified-2026-11-15/assets/alexey-chukhvichyov.jpg")}
+      ${person("Александр Молчанов", "спортсмен МАБ", ["Чемпион мира. Призёр Кубка мэра Москвы. Призёр первенства мира. Победитель первенства России. Мастер спорта."], "https://kids.billiardmsk.ru/wp-content/uploads/kids-unified-2026-11-15/assets/alexander-molchanov.jpg")}
+    </div>`),
+
+  "/detskaya/raspisanie": () => frame("kids", "kids.billiardmsk.ru/raspisanie/", `
+    <h2>Расписание и стоимость</h2>
+    ${block("Платная школа", "Цена месяца, не одного слота.")}
+    ${table(["Когда", "Время", "Цена"], [
+      ["Вторник и четверг", "16:00–17:30", "по тарифу"],
+      ["Суббота", "12:30–14:00", "по тарифу"],
+      ["Суббота", "14:30–16:00", "по тарифу"],
+      ["Воскресенье", "10:30–12:00", "по тарифу"],
+      ["Воскресенье", "12:30–14:00", "по тарифу"]
+    ])}
+    ${table(["Тариф", "В неделю", "Цена"], [["Стандарт", "1 раз", rub(9900)], ["Интенсив", "2 раза", rub(16900)], ["Профессионал", "3 раза", rub(21900)]])}
+    ${block("Спортивная школа", "")}
+    ${table(["Когда", "Время", "Цена"], [["Вторник и четверг", "15:30–17:30", "бесплатно"], ["Суббота", "11:30–13:30", "бесплатно"]])}`),
+
+  "/turniry": () => frame("tournaments", "billiardmsk.ru/turniry/", `
+    <h2>Турниры</h2>
+    ${table(["Когда", "Формат", "Время", "Места"], [
+      ["Вторник", "«Сателлит»", "19:00", "до 8"],
+      ["Среда", "Блиц", "19:00", "до 8"],
+      ["Суббота", "Пул", "11:00", "до 16"],
+      ["Воскресенье", "Рейтинговый", "10:00", "до 48"]
+    ])}
+    ${block("Виды", "Пул-8. Пул-9. Свободная пирамида. Свободная пирамида с продолжением. Парные. Невская пирамида. Командный.")}
+    ${block("Архив", "18 октября 2026, свободная пирамида с продолжением. Взнос " + rub(7000) + ", фонд " + rub(400000) + ". Стол оплачивает проигравший.")}
+    ${form("Запись", ["Имя", "Телефон"])}`),
+
+  "/turniry/rejting": () => frame("tournaments", "billiardmsk.ru/turniry/rejting/", `
+    <h2>Рейтинг участников, сезон 2026</h2>
+    ${table(["Место", "Участник"], [
+      ["1", "Коротков Максим"],
+      ["2", "Фотеев Павел"],
+      ["3", "Гаврилов Алексей"],
+      ["4", "Трояновский Кирилл"],
+      ["5", "Ильясова Ринат"],
+      ["6", "Голикова Елена"],
+      ["7", "Копров Дмитрий"],
+      ["8", "Мирпулатов Марат"],
+      ["9", "Горловский Дмитрий"],
+      ["10", "Нехорошев Денис"]
+    ])}
+    ${block("Дальше", "На странице турниров список продолжается.")}`),
+
+  "/vyezdy": () => frame("trips", "billiardmsk.ru/vyezdy/", `
+    <h2>Выезды</h2>
+    ${block("Сейчас", "Ближайший — Дубай, 29 ноября – 5 декабря 2026. Дальше афиша сезона 2027.")}
+    ${block("Отзыв", '<img class="review-shot" alt="Опубликованный отзыв о выезде" src="https://billiardmsk.ru/wp-content/uploads/reviews-vyezdy_019.jpg">')}
+    ${block("Плейлист", '<a href="https://www.youtube.com/playlist?list=PLFHdKq8pYyvzbkPfS0RgYuahlK2ejDAL6">НАШИ СБОРЫ ПО БИЛЬЯРДУ</a>')}
+    ${form("Заявка", ["Имя", "Телефон", "Выезд"])}`),
+
+  "/vyezdy/blizhajshie": () => frame("trips", "billiardmsk.ru/vyezdy/blizhajshie/", `
+    <h2>Ближайшие</h2>
+    ${table(["Пункт", "Условие"], [
+      ["Даты", "29 ноября – 5 декабря 2026"],
+      ["Город", "Дубай"],
+      ["Что это", "Международный бильярдный выезд МАБ"]
+    ])}
+    ${form("Заявка", ["Имя", "Телефон"])}`),
+
+  "/vyezdy/sezon": () => frame("trips", "billiardmsk.ru/vyezdy/sezon/", `
+    <h2>Афиша сезона 2027</h2>
+    ${table(["Даты", "Маршрут", "Что входит"], [
+      ["6–10 января", "Владимир и Суздаль", "Зимний выезд"],
+      ["21–28 февраля", "Таиланд", "Море, солнце, песок и бильярд"],
+      ["7–13 марта", "Минск", "Тренировочный сбор"],
+      ["2–8 мая", "Ереван", "Гастротур и бильярд"],
+      ["13–19 июня", "Санкт-Петербург", "Три турнира за сбор"],
+      ["по календарю Кубка", "Екатеринбург", "Утром тренировки, вечером матчи"],
+      ["5–11 сентября", "Сочи", "Море, солнце, песок и бильярд"],
+      ["31 октября – 6 ноября", "Казань", "Игра и город"],
+      ["5–11 декабря", "Дубай", "Море, солнце, песок и бильярд"]
+    ])}`),
+
+  "/vyezdy/lagerya": () => frame("trips", "billiardmsk.ru/vyezdy/lagerya/", `
+    <h2>Детские лагеря, 2027</h2>
+    ${table(["Смена", "Даты", "Что входит"], [
+      ["1", "28 марта – 3 апреля 2027", "Два варианта: москвичи и иногородние. Тренировки для родителей по желанию."],
+      ["2", "24–30 октября 2027", "Два варианта: москвичи и иногородние. Тренировки для родителей по желанию."]
+    ])}
+    ${form("Заявка", ["Имя", "Телефон", "Смена"])}`),
+
+  "/vyezdy/arhiv": () => frame("trips", "billiardmsk.ru/vyezdy/arhiv/", `
+    <h2>Архив</h2>
+    ${table(["Выезд", "Когда"], [
+      ["Минск", "2025"],
+      ["Минск", "2024"],
+      ["Баку", "2024"],
+      ["Калининград", "2024"],
+      ["Сочи", "2024"],
+      ["Сочи, фестиваль", "2025"],
+      ["Казань", "2023"]
+    ])}`),
+
+  "/klub": () => frame("club", "club.billiardmsk.ru/", `
+    <h2>Бильярдный клуб МАБ</h2>
+    ${block("Адрес", "Ленинградский проспект, 80/17, метро Сокол, 3–4 минуты пешком.")}
+    ${block("Залы", "16 столов для русского бильярда, 12 футов, сукно Simonis. 6 столов для пула. Большой и малый залы. 2 VIP-комнаты по одному столу, можно объединить.")}
+    ${block("Первый визит", "2\u00a0000 бонусных баллов.")}
+    ${form("Бронь стола", ["Имя", "Телефон"])}`),
+
+  "/klub/bron": () => frame("club", "club.billiardmsk.ru/bron/", `
+    <h2>Бронь</h2>
+    ${block("Стол", `
+      <form data-form id="book">
+        <input required placeholder="Имя" aria-label="Имя">
+        <input required placeholder="Телефон" aria-label="Телефон">
+        <select id="hall" aria-label="Зал">
+          <option value="big">Русский, большой зал</option>
+          <option value="small">Русский, малый зал</option>
+          <option value="tv">Русский, ТВ-стол</option>
+          <option value="solo">Один человек без тренера</option>
+          <option value="pool">Пул, большой зал</option>
+          <option value="vip">VIP, комната</option>
+          <option value="vip2">VIP, две комнаты</option>
+        </select>
+        <input required type="date" aria-label="Дата">
+        <input required type="time" aria-label="Время">
+        <select id="part" aria-label="Время суток">
+          <option value="0">Будни до 16:00</option>
+          <option value="1">После 16:00, выходные и праздники</option>
+        </select>
+        <p id="book-price"></p>
+        <button type="submit">Отправить</button>
+      </form>
+    `)}`),
+
+  "/klub/zaly": () => frame("club", "club.billiardmsk.ru/zaly/", `
+    <h2>Залы</h2>
+    ${table(["Зал", "Столы"], [
+      ["Русский бильярд", "16 столов, 12 футов, сукно Simonis. Большой и малый залы."],
+      ["Пул", "6 столов"],
+      ["VIP", "2 комнаты по одному столу, можно объединить"]
+    ])}
+    ${block("Схема зала", '<img class="scheme" alt="Схема зала" src="https://club.billiardmsk.ru/wp-content/uploads/2026/07/%D0%9C%D0%90%D0%91_%D0%A1%D1%85%D0%B5%D0%BC%D0%B0_png-1024x328.png">')}
+    ${block("Фото залов", gallery([1,2,3,5,9,12].map(n => "https://club.billiardmsk.ru/wp-content/uploads/2025/05/g-img-" + n + ".webp")))}`),
+
+  "/klub/ceny": () => frame("club", "club.billiardmsk.ru/ceny/", `
+    <h2>Цены</h2>
+    ${block("Часы", "До 16:00 в будни. Дальше\u00a0— вечер, выходные и праздники. Цена за час.")}
+    ${table(["Стол", "До 16:00", "Дальше"], [
+      ["Русский, большой зал", rub(1400), rub(1800)],
+      ["Русский, малый зал", rub(1500), rub(1900)],
+      ["Русский, ТВ-стол", rub(1600), rub(2100)],
+      ["Один человек без тренера", rub(1000), rub(1800)],
+      ["Пул", rub(1400), rub(1800)],
+      ["VIP, комната", rub(2500), rub(3900)],
+      ["VIP, две комнаты", rub(7000), rub(7000)]
+    ])}`),
+
+  "/klub/restoran": () => frame("club", "club.billiardmsk.ru/restoran/", `
+    <h2>Ресторан</h2>
+    ${block("Авторская кухня", "Ресторан в клубе: еда между партиями. Меню закрывает разные вкусы.")}
+    ${block("Меню", `
+      <p><a href="https://club.billiardmsk.ru/wp-content/uploads/2026/07/кухня-сайт-1.pdf">Меню кухни</a></p>
+      <p><a href="https://club.billiardmsk.ru/wp-content/uploads/2026/10/doc_55733bde3fad_%D0%9C%D0%90%D0%91_%D0%B1%D0%B0%D1%80_0910.pdf">Меню бара</a></p>
+      <p><a href="https://club.billiardmsk.ru/wp-content/uploads/2026/02/Меню_МАБ_ИТОГ_0802-2.pdf">Полное меню</a></p>
+    `)}`),
+
+  "/klub/prazdniki": () => frame("club", "club.billiardmsk.ru/prazdniki/", `
+    <h2>Праздники</h2>
+    ${block("Форматы", "Турнир. Корпоратив. День рождения. Банкет.")}
+    ${block("Залы", "Большой. Малый. VIP1 и VIP2, можно объединить.")}
+    ${form("Заявка", ["Имя", "Телефон", "Формат"])}`),
+
+  "/klub/kak-dobratsya": () => frame("club", "club.billiardmsk.ru/kak-dobratsya/", `
+    <h2>Как добраться</h2>
+    ${block("Адрес", "Ленинградский проспект, 80/17")}
+    ${block("Метро", "Сокол, 3–4 минуты пешком")}
+    ${block("Бесплатная парковка", "Для гостей на автомобилях работает парковка клуба. Место дают, если оно свободно к приезду.")}
+    ${block("Парковка 1", '<img class="park-shot" alt="Парковка 1" src="https://club.billiardmsk.ru/wp-content/uploads/2025/04/map-3.jpg">')}
+    ${block("Парковка 2", '<img class="park-shot" alt="Парковка 2" src="https://club.billiardmsk.ru/wp-content/uploads/2025/04/map-2.jpg">')}
+    ${block("Карта", '<a href="https://yandex.ru/maps/?text=Ленинградский%20проспект%2080/17%20Москва">Открыть на Яндекс Картах</a>')}
+    ${block("Связь", "Клуб +7\u00a0495\u00a0156-25-26. Telegram и WhatsApp +7\u00a0966\u00a0166-74-73.")}`),
+
+  "/klub/pravila": () => frame("club", "club.billiardmsk.ru/pravila/", `
+    <h2>Правила</h2>
+    ${block("Бронь", "Услуга предоставляется только лицу, на которое оформлено бронирование. При получении нужно подтвердить личность: документ или номер телефона, с которого была запись.")}
+    ${block("Баллы", "2\u00a0000 бонусных баллов при первом посещении.")}
+    ${block("Документы", '<a href="https://club.billiardmsk.ru/policy#rules">Политика и оферта клуба</a>')}`),
+
+  "/franshiza": () => frame("franchise", "billiardmsk.ru/franshiza/", `
+    <h2>Франшиза</h2>
+    ${block("Что открывается", "Клуб и школа МАБ в другом городе.")}`),
+
+  "/franshiza/klub": () => frame("franchise", "billiardmsk.ru/franshiza/klub/", `
+    <h2>Клуб</h2>
+    ${block("Клуб МАБ", "В городе франчайзи")}
+    ${form("Заявка", ["Имя", "Город", "Телефон"])}`),
+
+  "/franshiza/shkola": () => frame("franchise", "billiardmsk.ru/franshiza/shkola/", `
+    <h2>Школа</h2>
+    ${block("Школа МАБ", "Взрослые и дети")}
+    ${form("Заявка", ["Имя", "Город", "Телефон"])}`),
+
+  "/franshiza/zayavka": () => frame("franchise", "billiardmsk.ru/franshiza/zayavka/", `
+    <h2>Заявка</h2>
+    ${form("Заявка", ["Имя", "Город", "Телефон"])}`),
+
+  "/online": () => frame("online", "billiardmsk.ru/online/", `
+    <h2>Онлайн-обучение</h2>
+    ${block("Три курса", "Основы русского бильярда, резка чужих шаров, свояки. У каждого курса тарифы «Базовый», «Продвинутый» и «ВИП». Три курса вместе дешевле на 20%: базовый " + rub(10480) + " вместо " + rub(13100) + ", продвинутый " + rub(20080) + " вместо " + rub(25100) + ", ВИП " + rub(38160) + " вместо " + rub(47700) + ".")}
+    ${block("Что внутри тарифа", "Базовый: 14 видеоуроков, платформа на 3 месяца, чат с тренером в Telegram на 1 месяц. Продвинутый: 5 видеоуроков, платформа на 3 месяца, клуб бильярдистов на 1 месяц. ВИП: 5 видеоуроков, платформа на 6 месяцев, клуб на 1 месяц. Везде домашние задания, проверка тренером, методичка и рабочая тетрадь. Тренер — КМС, стаж от 5 лет.")}
+    ${block("Программы тренировок", "Их можно собрать под свой уровень. Свободная пирамида, Ярослав Гладский и Мария Мамичева (Карпова): " + rub(4500) + " / " + rub(5950) + " / " + rub(7950) + ". Московская пирамида, Ярослав Гладский и Павел Плотников: " + rub(4200) + " / " + rub(5700) + " / " + rub(7600) + ". Свояки, Ярослав Гладский: " + rub(1900) + " / " + rub(2600) + " / " + rub(5300) + ". Пул: " + rub(4900) + " / " + rub(5900) + " / " + rub(9900) + ". Цены — базовый, продвинутый, ВИП.")}
+    ${form("Запись", ["Имя", "Телефон", "Курс"])}`),
+
+  "/online/osnovy": () => frame("online", "billiardmsk.ru/online/osnovy/", `
+    <h2>Основы русского бильярда</h2>
+    ${block("Тарифы", "Базовый " + rub(3900) + ". Продвинутый " + rub(7900) + ". ВИП " + rub(14900) + ".")}
+    ${handbook}
+    ${form("Запись", ["Имя", "Телефон"])}`),
+
+  "/online/svoyaki": () => frame("online", "billiardmsk.ru/online/svoyaki/", `
+    <h2>Свояки</h2>
+    ${block("Тарифы", "Базовый " + rub(4900) + ". Продвинутый " + rub(8900) + ". ВИП " + rub(16900) + ".")}
+    ${block("Программа", "Отработка базового угла отскока, своих шаров в угол и центр, своих шаров через весь стол. Ярослав Гладский. Базовый " + rub(1900) + ", продвинутый " + rub(2600) + ", ВИП " + rub(5300) + ".")}
+    ${checklist}`),
+
+  "/online/rezka": () => frame("online", "billiardmsk.ru/online/rezka/", `
+    <h2>Резка чужих шаров</h2>
+    ${block("Тарифы", "Базовый " + rub(4300) + ". Продвинутый " + rub(8300) + ". ВИП " + rub(15900) + ".")}
+    ${form("Запись", ["Имя", "Телефон"])}`),
+
+  "/magazin": () => frame("shop", "shop.billiardmsk.ru/", `
+    <h2>Магазин</h2>
+    ${block("Каталог", "Кии — 30. Столы — 33. Аксессуары — 32. Чехлы и тубусы — 5.")}
+    <div class="cards">
+      <article><img alt="Кий Vantex №2507001" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/021_vantex2507001/A7M00507-228x228.jpg"><b>Кий 2-х составной Vantex №2507001</b><p>${rub(28000)}</p><p>В наличии</p></article>
+      <article><img alt="Кий Vantex №2507215" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/021_vantex2507215/A7M00564-228x228.jpg"><b>Кий 2-х составной Vantex №2507215</b><p>${rub(30000)}</p><p>В наличии</p></article>
+      <article><img alt="Кий Vantex №2507230" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/021_vantex2507230/A7M00421-228x228.jpg"><b>Кий 2-х составной Vantex №2507230</b><p>${rub(30000)}</p><p>В наличии</p></article>
+    </div>`),
+
+  "/magazin/kii": () => frame("shop", "shop.billiardmsk.ru/kii/", `
+    <h2>Кии</h2>
+    ${table(["Раздел", "Штук"], [["Для русского бильярда", "29"], ["Двухсоставные", "28"], ["Трёхсоставные", "0"], ["Удлинитель", "1"]])}
+    <div class="cards" style="margin-top:20px">
+      <article><img alt="Кий Vantex №2507001" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/021_vantex2507001/A7M00507-228x228.jpg"><b>Кий 2-х составной Vantex №2507001</b><p>Фабрика Vantex, Казань. Чёрный граб.</p><p>${rub(28000)}</p><p>В наличии</p></article>
+      <article><img alt="Кий Vantex №2507215" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/021_vantex2507215/A7M00564-228x228.jpg"><b>Кий 2-х составной Vantex №2507215</b><p>${rub(30000)}</p><p>В наличии</p></article>
+      <article><img alt="Кий Vantex №2507230" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/021_vantex2507230/A7M00421-228x228.jpg"><b>Кий 2-х составной Vantex №2507230</b><p>${rub(30000)}</p><p>В наличии</p></article>
+    </div>`),
+
+  "/magazin/stoly": () => frame("shop", "shop.billiardmsk.ru/stoly/", `
+    <h2>Столы</h2>
+    ${table(["Серия", "Штук"], [["МАБ × Фабрика Старт", "5"], ["Для дачи", "9"], ["Профессиональная", "12"], ["Эксклюзивная", "7"]])}
+    <div class="cards" style="margin-top:20px">
+      <article><img alt="Турнирный II" src="https://shop.billiardmsk.ru/image/cache/catalog/IMG_8427-228x228.JPG"><b>Турнирный II</b><p>${rub(326800)}</p><p>В наличии</p></article>
+      <article><img alt="Reason PRO (МДФ)" src="https://shop.billiardmsk.ru/image/cache/catalog/IMG_8431-228x228.JPG"><b>Reason PRO (МДФ)</b><p>${rub(564720)}</p><p>В наличии</p></article>
+    </div>`),
+
+  "/magazin/aksessuary": () => frame("shop", "shop.billiardmsk.ru/aksessuary/", `
+    <h2>Аксессуары</h2>
+    ${table(["Раздел", "Штук"], [["Коллекция МАБ", "15"], ["Мел", "7"], ["Наклейки", "10"]])}
+    <div class="cards" style="margin-top:20px">
+      <article><img alt="Мишень 1/2" src="https://shop.billiardmsk.ru/image/cache/catalog/%208.04/A7M06481%20копия_resized-228x228.jpg"><b>Мишень 1/2</b><p>${rub(600)}</p><p>В наличии</p></article>
+      <article><img alt="Мел Taom Chalk 2.0 Blue" src="https://shop.billiardmsk.ru/image/cache/catalog/20.05/мел-taom-chalk-2-0-blue/A7M00832-228x228.jpg"><b>Мел Taom Chalk 2.0 Blue</b><p>${rub(2650)}</p><p>В наличии</p></article>
+    </div>`),
+
+  "/magazin/tubusy": () => frame("shop", "shop.billiardmsk.ru/tubusy/", `
+    <h2>Чехлы и тубусы</h2>
+    ${table(["Раздел", "Штук"], [["Тубусы", "5"]])}
+    <div class="cards" style="margin-top:20px">
+      <article><img alt="Тубус «Втулка»" src="https://shop.billiardmsk.ru/image/cache/catalog/A7M05613%20копия_resized-228x228.jpg"><b>Тубус «Втулка», кожзам</b><p>${rub(6000)}</p><p>В наличии</p></article>
+      <article><img alt="Тубус Колчан Арчи" src="https://shop.billiardmsk.ru/image/cache/catalog/%208.04/A7M04954%20копия_resized-228x228.jpg"><b>Тубус Колчан Арчи</b><p>${rub(9000)}</p><p>В наличии</p></article>
+    </div>`),
+
+  "/magazin/dostavka": () => frame("shop", "shop.billiardmsk.ru/dostavka/", `
+    <h2>Доставка и возврат</h2>
+    ${block("Что есть в магазине", "Информация о доставке и возвратах, возврат товара, публичная оферта.")}
+    ${block("Карточка товара", "Условия доставки магазин пишет в карточке товара.")}`),
+
+  "/magazin/kabinet": () => frame("shop", "shop.billiardmsk.ru/kabinet/", `
+    <h2>Кабинет</h2>
+    ${block("Разделы", "Вход. Регистрация. Заказы. Закладки. Рассылка. Корзина.")}`),
+
+  "/associaciya": () => frame("association", "billiardmsk.ru/associaciya/", `
+    <h2>Ассоциация</h2>
+    ${block("Кто вступает", "Игроки, тренеры, бильярдные клубы, компании.")}`),
+
+  "/associaciya/igroki": () => frame("association", "billiardmsk.ru/associaciya/igroki/", `
+    <h2>Игроки</h2>
+    ${form("Заявка", ["Имя", "Телефон", "Город"])}`),
+
+  "/associaciya/trenery": () => frame("association", "billiardmsk.ru/associaciya/trenery/", `
+    <h2>Тренеры</h2>
+    ${form("Заявка", ["Имя", "Телефон", "Город"])}`),
+
+  "/associaciya/kluby": () => frame("association", "billiardmsk.ru/associaciya/kluby/", `
+    <h2>Бильярдные клубы</h2>
+    ${form("Заявка", ["Клуб", "Город", "Телефон"])}`),
+
+  "/associaciya/kompanii": () => frame("association", "billiardmsk.ru/associaciya/kompanii/", `
+    <h2>Компании</h2>
+    ${form("Заявка", ["Компания", "Город", "Телефон"])}`)
+};
+
+const prices = {
+  ind: () => table(["", "Ведущий", "Мастер", "Премьер, Чухвичёв", "Главный, Соць", "Гладская", "Гладский"], [
+    ["1 занятие", pair(5500, 6700), pair(6500, 7700), pair(7300, 8500), pair(10000, 11000), rub(15000), rub(30000)],
+    ["10 занятий", pair(51000, 62000), pair(61000, 72000), pair(68000, 79000), pair(93000, 103000), "—", "—"],
+    ["30 занятий", pair(143000, 173000), pair(167000, 197000), pair(167000, 197000), pair(261000, 287000), "—", "—"]
+  ]) + "<p>10 занятий: своё время, турнир, заморозка 14 дней. 30 занятий: своё время, 2 турнира, заморозка 28 дней.</p>",
+  pair: () => table(["", "Ведущий", "Мастер", "Премьер, Чухвичёв", "Главный, Соць", "Гладская", "Гладский"], [
+    ["1 занятие", pair(7300, 8700), pair(8500, 9800), pair(9500, 10500), pair(13000, 14500), rub(15000), rub(30000)],
+    ["10 занятий", pair(68000, 81000), pair(79000, 91000), pair(87000, 97000), pair(121000, 135000), "—", "—"],
+    ["30 занятий", pair(187000, 223000), pair(217000, 252000), pair(242000, 269000), pair(335000, 373000), "—", "—"]
+  ]),
+  group: () => table(["", "До 17:00", "После 17:00"], [
+    ["Пробное, 60 минут", rub(2400), rub(2800)],
+    ["Разовое", rub(3000), rub(3500)],
+    ["15 занятий", rub(38000), rub(44500)],
+    ["30 занятий", rub(65000), rub(77000)]
+  ]) + "<p>15 занятий: своё время, заморозка 2 недели. 30 занятий: своё время, 1 турнир, заморозка 4 недели. При продлении — 1 турнир в подарок.</p>",
+  time: () => table(["Пакет", "Цена"], [["1 занятие", rub(2500)], ["9 занятий", rub(18700)], ["18 занятий", rub(33500)]]) + "<p>В расписании группа до 16 человек. Дежурный тренер.</p>"
+};
+
+const hallPrice = { big: [1400, 1800], small: [1500, 1900], tv: [1600, 2100], solo: [1000, 1800], pool: [1400, 1800], vip: [2500, 3900], vip2: [7000, 7000] };
+
+function renderNav() {
+  const here = path();
+  document.getElementById("nav").innerHTML = NAV.map(item => {
+    const on = item.match.some(prefix => here === prefix || here.startsWith(prefix + "/")) ? ' aria-current="page"' : "";
+    let drop = "";
+    if (item.columns) {
+      drop = `<div class="drop wide">${item.columns.map(([title, links]) => `<div><div class="col-title">${title}</div>${links.map(([name, href]) => `<a href="${linkHref(href)}">${name}</a>`).join("")}</div>`).join("")}</div>`;
+    } else {
+      drop = `<div class="drop">${item.links.map(([name, href]) => `<a href="${linkHref(href)}">${name}</a>`).join("")}</div>`;
+    }
+    return `<div class="menu"><a href="#${item.href}"${on}>${item.title}</a>${drop}</div>`;
+  }).join("");
+}
+
+function renderPrices() {
+  const panel = document.getElementById("price-panel");
+  if (!panel) return;
+  const show = name => { panel.innerHTML = prices[name](); };
+  show("ind");
+  panel.parentElement.addEventListener("click", event => {
+    const button = event.target.closest("button[data-tab]");
+    if (button) show(button.dataset.tab);
+  });
+}
+
+function renderBook() {
+  const hall = document.getElementById("hall");
+  const part = document.getElementById("part");
+  const out = document.getElementById("book-price");
+  if (!hall || !out) return;
+  const draw = () => { out.textContent = rub(hallPrice[hall.value][Number(part.value)]) + " в час"; };
+  hall.addEventListener("change", draw);
+  part.addEventListener("change", draw);
+  draw();
+}
+
+function legalKey(here) {
+  if (here.startsWith("/klub")) return "club";
+  if (here.startsWith("/vyezdy")) return "trips";
+  if (here.startsWith("/magazin") || here.startsWith("/associaciya")) return "";
+  return "school";
+}
+function renderFootLegal() {
+  const box = document.getElementById("foot-legal");
+  if (!box) return;
+  const item = LEGAL.find(row => row[0] === legalKey(path()));
+  const body = item ? `<div><b>${item[1]}</b><p>${item[2]}</p></div>` : "";
+  const all = path() === "/dokumenty" ? "" : `<a href="#/dokumenty">Все реквизиты</a>`;
+  box.innerHTML = `<h2>Реквизиты</h2>${body}${all}`;
+}
+
+function renderFootDocs() {
+  const box = document.getElementById("foot-docs");
+  if (!box) return;
+  const group = DOC_GROUPS.find(item => item[0] === docKey(path()));
+  const all = path() === "/dokumenty" ? "" : `<a class="all-docs" href="#/dokumenty">Все документы</a>`;
+  box.innerHTML = mainDocs(group) + all;
+}
+
+function render() {
+  if (path() === "/mabplay") {
+    location.replace("https://mabplay.ru/");
+    return;
+  }
+  const view = pages[path()] || (() => `<h2>Страница не найдена</h2><p><a href="#/">На главную</a></p>`);
+  document.getElementById("app").innerHTML = view();
+  renderFootDocs();
+  renderFootLegal();
+  renderPrices();
+  renderBook();
+  document.querySelectorAll("form[data-form]").forEach(node => {
+    node.addEventListener("submit", event => {
+      event.preventDefault();
+      document.querySelectorAll(".toast").forEach(item => item.remove());
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = "Заявка принята";
+      document.body.appendChild(toast);
+    });
+  });
+  renderNav();
+  window.scrollTo(0, 0);
+}
+document.getElementById("nav-toggle").addEventListener("click", () => {
+  const nav = document.getElementById("nav");
+  const open = nav.classList.toggle("open");
+  document.getElementById("nav-toggle").setAttribute("aria-expanded", String(open));
+});
+document.getElementById("nav").addEventListener("click", event => {
+  const link = event.target.closest(".menu > a");
+  if (!link || !window.matchMedia("(max-width: 800px)").matches) return;
+  const menu = link.parentElement;
+  if (!menu.querySelector(".drop")) return;
+  if (!menu.classList.contains("open")) {
+    event.preventDefault();
+    document.querySelectorAll(".menu.open").forEach(node => node.classList.remove("open"));
+    menu.classList.add("open");
+  }
+});
+window.addEventListener("hashchange", render);
+if (!location.hash) location.hash = "#/";
+render();
+</script>
+</body>
+</html>
