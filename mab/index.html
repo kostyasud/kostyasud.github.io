@@ -54,7 +54,8 @@
   .slider-kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
   .slider-title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.15; }
   .slider p { margin: 0; max-width: 520px; }
-  .slider .btn { align-self: start; margin-top: 8px; }
+  .slider-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .slider-actions .btn-white { background: var(--white); color: var(--navy); }
   .actions, .cards, .people { display: grid; gap: 12px; }
   .actions { grid-template-columns: repeat(3, 1fr); }
   .actions a, .cards article, .people article { border: 1px solid var(--blue); padding: 16px; display: block; }
@@ -348,14 +349,13 @@ const pages = {
       <p class="slider-kicker">Слайдер</p>
       <p class="slider-title">Научись играть<br>в&nbsp;бильярд</p>
       <p>и побеждать друзей за 3 занятия в&nbsp;одной из крупнейших академий Москвы</p>
-      <a class="btn" href="#/shkola">Записаться</a>
+      <div class="slider-actions">
+        <a class="btn" href="#/shkola">Записаться</a>
+        <a class="btn btn-white" href="#/klub/bron">Забронировать стол</a>
+        <a class="btn btn-white" href="#/magazin">Интернет-магазин</a>
+      </div>
     </section>
-    <div class="actions">
-      <a href="#/shkola">Записаться в школу</a>
-      <a href="#/klub/bron">Забронировать стол</a>
-      <a href="#/magazin">Интернет-магазин</a>
-    </div>
-    <div class="block" style="margin-top:20px"><h3>Разделы</h3><div class="links">
+    <div class="block"><h3>Разделы</h3><div class="links">
       ${NAV.map(item => `<a href="#${item.href}">${item.title}</a>`).join("")}
     </div></div>`,
 
