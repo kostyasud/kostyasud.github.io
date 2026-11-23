@@ -56,6 +56,9 @@
   .slider p { margin: 0; max-width: 520px; }
   .slider-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
   .slider-actions .btn-white { background: var(--white); color: var(--navy); }
+  .nonprofit { border: 1px solid var(--blue); background: #eef3fb; padding: 16px 20px; margin: 0 0 20px; }
+  .nonprofit b { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
+  .nonprofit p { margin: 0; }
   .actions, .cards, .people { display: grid; gap: 12px; }
   .actions { grid-template-columns: repeat(3, 1fr); }
   .actions a, .cards article, .people article { border: 1px solid var(--blue); padding: 16px; display: block; }
@@ -167,28 +170,28 @@ const pair = (a, b) => new Intl.NumberFormat("ru-RU").format(a) + " / " + new In
 
 const NAV = [
   { id: "school", title: "Школа", href: "/shkola", match: ["/shkola", "/detskaya", "/oplata"], columns: [
-    ["Взрослая", [["Обзор", "/shkola/vzroslaya"], ["Тренировки", "/shkola/vzroslaya/trenirovki"], ["Корпоративное обучение", "/shkola/vzroslaya/korporativnoe-obuchenie"], ["Тарифы и расписание", "/shkola/vzroslaya/tarify"], ["Сертификаты", "/shkola/vzroslaya/sertifikaty"], ["Тренерский состав", "/shkola/vzroslaya/trenery"], ["Отзывы", "/shkola/vzroslaya/otzyvy"], ["Оплата", "/oplata"]]],
+    ["Взрослая", [["Обзор", "/shkola/vzroslaya"], ["Тренировки", "/shkola/vzroslaya/trenirovki"], ["Корпоративное обучение", "/shkola/vzroslaya/korporativnoe-obuchenie"], ["Расписание", "/shkola/vzroslaya/raspisanie"], ["Тарифы", "/shkola/vzroslaya/tarify"], ["Сертификаты", "/shkola/vzroslaya/sertifikaty"], ["Тренерский состав", "/shkola/vzroslaya/trenery"], ["Отзывы", "/shkola/vzroslaya/otzyvy"], ["Оплата", "/oplata"]]],
     ["Детская", [["Обзор", "/detskaya"], ["Бесплатное спортивное", "/detskaya/besplatnoe"], ["Платное направление", "/detskaya/platnoe"], ["Тренерский состав", "/detskaya/trenery"], ["Расписание и стоимость", "/detskaya/raspisanie"]]]
   ]},
   { id: "tournaments", title: "Турниры", href: "/turniry", match: ["/turniry"], links: [["Календарь", "/turniry"], ["МАБплей", "https://mabplay.ru/"], ["Рейтинг", "/turniry/rejting"]] },
   { id: "trips", title: "Выезды", href: "/vyezdy", match: ["/vyezdy"], links: [["Обзор", "/vyezdy"], ["Ближайшие", "/vyezdy/blizhajshie"], ["Сезон", "/vyezdy/sezon"], ["Детские лагеря", "/vyezdy/lagerya"], ["Архив", "/vyezdy/arhiv"]] },
   { id: "club", title: "Клуб", href: "/klub", match: ["/klub"], links: [["Обзор", "/klub"], ["Бронь", "/klub/bron"], ["Залы", "/klub/zaly"], ["Цены", "/klub/ceny"], ["Ресторан", "/klub/restoran"], ["Праздники", "/klub/prazdniki"], ["Как добраться", "/klub/kak-dobratsya"], ["Правила", "/klub/pravila"]] },
-  { id: "franchise", title: "Франшиза", href: "/franshiza", match: ["/franshiza"], links: [["Обзор", "/franshiza"], ["Клуб", "/franshiza/klub"], ["Школа", "/franshiza/shkola"], ["Заявка", "/franshiza/zayavka"]] },
-  { id: "online", title: "Онлайн", href: "/online", match: ["/online"], links: [["Обзор", "/online"], ["Основы", "/online/osnovy"], ["Свояки", "/online/svoyaki"], ["Резка", "/online/rezka"]] },
+  { id: "franchise", title: "Франшиза", href: "/franshiza", match: ["/franshiza"], links: [["Обзор", "/franshiza"], ["Пакеты", "/franshiza/pakety"], ["Поддержка", "/franshiza/podderzhka"], ["Заявка", "/franshiza/zayavka"]] },
+  { id: "online", title: "Онлайн", href: "/online", match: ["/online"], links: [["Обзор", "/online"], ["Основы", "/online/osnovy"], ["Свояки", "/online/svoyaki"], ["Резка", "/online/rezka"], ["Программы", "/online/programmy"], ["Методичка", "/online/metodichka"], ["Чек-лист", "/online/chek-list"]] },
   { id: "shop", title: "Магазин", href: "/magazin", match: ["/magazin"], links: [["Каталог", "/magazin"], ["Кии", "/magazin/kii"], ["Столы", "/magazin/stoly"], ["Аксессуары", "/magazin/aksessuary"], ["Чехлы и тубусы", "/magazin/tubusy"], ["Доставка", "/magazin/dostavka"], ["Кабинет", "/magazin/kabinet"]] },
-  { id: "association", title: "Ассоциация", href: "/associaciya", match: ["/associaciya"], links: [["Обзор", "/associaciya"], ["Игроки", "/associaciya/igroki"], ["Тренеры", "/associaciya/trenery"], ["Бильярдные клубы", "/associaciya/kluby"], ["Компании", "/associaciya/kompanii"]] }
+  { id: "association", title: "Ассоциация", href: "/associaciya", match: ["/associaciya"], links: [["Обзор", "/associaciya"], ["Спортсмены", "/associaciya/sportsmeny"], ["Экспертный совет", "/associaciya/sovet"], ["Клубы", "/associaciya/kluby"], ["Компании", "/associaciya/kompanii"]] }
 ];
 
 const SIDE = {
-  adult: ["Взрослая школа", [["Обзор", "/shkola/vzroslaya"], ["Тренировки", "/shkola/vzroslaya/trenirovki"], ["Корпоративное обучение", "/shkola/vzroslaya/korporativnoe-obuchenie"], ["Тарифы и расписание", "/shkola/vzroslaya/tarify"], ["Сертификаты", "/shkola/vzroslaya/sertifikaty"], ["Тренерский состав", "/shkola/vzroslaya/trenery"], ["Отзывы", "/shkola/vzroslaya/otzyvy"], ["Оплата", "/oplata"]]],
+  adult: ["Взрослая школа", [["Обзор", "/shkola/vzroslaya"], ["Тренировки", "/shkola/vzroslaya/trenirovki"], ["Корпоративное обучение", "/shkola/vzroslaya/korporativnoe-obuchenie"], ["Расписание", "/shkola/vzroslaya/raspisanie"], ["Тарифы", "/shkola/vzroslaya/tarify"], ["Сертификаты", "/shkola/vzroslaya/sertifikaty"], ["Тренерский состав", "/shkola/vzroslaya/trenery"], ["Отзывы", "/shkola/vzroslaya/otzyvy"], ["Оплата", "/oplata"]]],
   kids: ["Детская школа", [["Обзор", "/detskaya"], ["Бесплатное спортивное", "/detskaya/besplatnoe"], ["Платное направление", "/detskaya/platnoe"], ["Тренерский состав", "/detskaya/trenery"], ["Расписание и стоимость", "/detskaya/raspisanie"]]],
   tournaments: ["Турниры", [["Календарь", "/turniry"], ["МАБплей", "https://mabplay.ru/"], ["Рейтинг", "/turniry/rejting"]]],
   trips: ["Выезды", [["Обзор", "/vyezdy"], ["Ближайшие", "/vyezdy/blizhajshie"], ["Сезон", "/vyezdy/sezon"], ["Детские лагеря", "/vyezdy/lagerya"], ["Архив", "/vyezdy/arhiv"]]],
   club: ["Клуб", [["Обзор", "/klub"], ["Бронь", "/klub/bron"], ["Залы", "/klub/zaly"], ["Цены", "/klub/ceny"], ["Ресторан", "/klub/restoran"], ["Праздники", "/klub/prazdniki"], ["Как добраться", "/klub/kak-dobratsya"], ["Правила", "/klub/pravila"]]],
-  franchise: ["Франшиза", [["Обзор", "/franshiza"], ["Клуб", "/franshiza/klub"], ["Школа", "/franshiza/shkola"], ["Заявка", "/franshiza/zayavka"]]],
-  online: ["Онлайн", [["Обзор", "/online"], ["Основы", "/online/osnovy"], ["Свояки", "/online/svoyaki"], ["Резка", "/online/rezka"]]],
+  franchise: ["Франшиза", [["Обзор", "/franshiza"], ["Пакеты", "/franshiza/pakety"], ["Поддержка", "/franshiza/podderzhka"], ["Заявка", "/franshiza/zayavka"]]],
+  online: ["Онлайн", [["Обзор", "/online"], ["Основы", "/online/osnovy"], ["Свояки", "/online/svoyaki"], ["Резка", "/online/rezka"], ["Программы", "/online/programmy"], ["Методичка", "/online/metodichka"], ["Чек-лист", "/online/chek-list"]]],
   shop: ["Магазин", [["Каталог", "/magazin"], ["Кии", "/magazin/kii"], ["Столы", "/magazin/stoly"], ["Аксессуары", "/magazin/aksessuary"], ["Чехлы и тубусы", "/magazin/tubusy"], ["Доставка", "/magazin/dostavka"], ["Кабинет", "/magazin/kabinet"]]],
-  association: ["Ассоциация", [["Обзор", "/associaciya"], ["Игроки", "/associaciya/igroki"], ["Тренеры", "/associaciya/trenery"], ["Бильярдные клубы", "/associaciya/kluby"], ["Компании", "/associaciya/kompanii"]]]
+  association: ["Ассоциация", [["Обзор", "/associaciya"], ["Спортсмены", "/associaciya/sportsmeny"], ["Экспертный совет", "/associaciya/sovet"], ["Клубы", "/associaciya/kluby"], ["Компании", "/associaciya/kompanii"]]]
 };
 
 const ALIAS = {
@@ -196,7 +199,7 @@ const ALIAS = {
   "/adult": "/shkola/vzroslaya",
   "/adult/train": "/shkola/vzroslaya/trenirovki",
   "/adult/corp": "/shkola/vzroslaya/korporativnoe-obuchenie",
-  "/adult/schedule": "/shkola/vzroslaya/tarify",
+  "/adult/schedule": "/shkola/vzroslaya/raspisanie",
   "/adult/prices": "/shkola/vzroslaya/tarify",
   "/adult/cert": "/shkola/vzroslaya/sertifikaty",
   "/adult/coaches": "/shkola/vzroslaya/trenery",
@@ -226,14 +229,17 @@ const ALIAS = {
   "/club/route": "/klub/kak-dobratsya",
   "/club/rules": "/klub/pravila",
   "/franchise": "/franshiza",
-  "/franchise/club": "/franshiza/klub",
-  "/franchise/school": "/franshiza/shkola",
+  "/franchise/club": "/franshiza",
+  "/franchise/school": "/franshiza",
+  "/franshiza/klub": "/franshiza",
+  "/franshiza/shkola": "/franshiza",
   "/franchise/apply": "/franshiza/zayavka",
   "/online/basics": "/online/osnovy",
   "/online/svoyaki": "/online/svoyaki",
   "/online/cut": "/online/rezka",
-  "/online/book": "/online",
-  "/online/list": "/online",
+  "/online/book": "/online/metodichka",
+  "/online/list": "/online/chek-list",
+  "/online/programs": "/online/programmy",
   "/shop": "/magazin",
   "/shop/cues": "/magazin/kii",
   "/shop/tables": "/magazin/stoly",
@@ -242,11 +248,13 @@ const ALIAS = {
   "/shop/delivery": "/magazin/dostavka",
   "/shop/account": "/magazin/kabinet",
   "/association": "/associaciya",
-  "/association/players": "/associaciya/igroki",
-  "/association/coaches": "/associaciya/trenery",
+  "/association/players": "/associaciya/sportsmeny",
+  "/association/coaches": "/associaciya/sovet",
   "/association/clubs": "/associaciya/kluby",
   "/association/partners": "/associaciya/kompanii",
-  "/association/athletes": "/associaciya/igroki",
+  "/association/athletes": "/associaciya/sportsmeny",
+  "/associaciya/igroki": "/associaciya/sportsmeny",
+  "/associaciya/trenery": "/associaciya/sovet",
   "/reviews": "/shkola/vzroslaya/otzyvy",
   "/oplata": "/oplata"
 };
@@ -344,7 +352,7 @@ function mainDocs(group) {
 const pages = {
   "/": () => `
     <p class="domain">billiardmsk.ru</p>
-    <h1>Международная академия бильярда</h1>
+    <h1>Международная Академия Бильярда</h1>
     <section class="slider" aria-label="Слайдер">
       <p class="slider-kicker">Слайдер</p>
       <p class="slider-title">Научись играть<br>в&nbsp;бильярд</p>
@@ -387,7 +395,10 @@ const pages = {
     ${block("Ассоциация", "Юрлицо и взнос на текущих сайтах не опубликованы.")}
     ${block("Выезды", "Цена и число мест на странице не опубликованы. У фестиваля в Сочи 2025 на странице нет дня и месяца.")}
     ${block("Доставка", "Город, срок и перевозчик на странице доставки не написаны. В магазине условия стоят в карточке товара.")}
-    ${block("Отзывы", "На страницах онлайн и турниров текстовых цитат нет. У школы четыре цитаты и снимки отзывов. У выездов опубликован снимок отзыва.")}`,
+    ${block("Отзывы", "На страницах онлайн и турниров текстовых цитат нет. У школы четыре цитаты и снимки отзывов. У выездов опубликован снимок отзыва.")}
+    ${block("Ассоциация", "В правках нет текста целей и планов и нет списков спортсменов, экспертного совета, клубов и компаний.")}
+    ${block("Рейтинг", "Вкладка «Клубные» на mabplay.ru/rating открывается кнопкой на странице. Отдельного адреса у неё нет.")}
+    ${block("Франшиза", "В пакете написано «4% (+ каникулы)». Что такое каникулы, в презентации не раскрыто. На обложке презентации ещё «Московская Академия Бильярда». На сайте оставлено «Международная Академия Бильярда».")}`,
 
   "/shkola/vzroslaya": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/", `
     <h2>Взрослая школа</h2>
@@ -419,16 +430,20 @@ const pages = {
     ${block("Мастер-классы", "Мастер-класс и совместная игра. Серия регулярных занятий.")}
     ${form("Заявка", ["Имя", "Телефон", "Компания"])}`),
 
+  "/shkola/vzroslaya/raspisanie": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/raspisanie/", `
+    <h2>Расписание</h2>
+    ${block("Клуб МАБ, Сокол", 'Разовые занятия и пакеты — в <a href="#/shkola/vzroslaya/tarify">тарифах</a>.')}
+    ${table(["День", "Занятие", "Время"], [
+      ["Понедельник", "Группа до 6", "19:00–20:30"],
+      ["Понедельник", "Группа до 6", "20:40–22:10"],
+      ["Вторник", "«Время МАБ», до 16", "12:00–14:00"],
+      ["Суббота", "«Время МАБ», до 16", "10:00–12:00"],
+      ["Суббота", "Группа до 6", "12:00–13:30"]
+    ])}`),
+
   "/shkola/vzroslaya/tarify": () => frame("adult", "billiardmsk.ru/shkola/vzroslaya/tarify/", `
-    <h2>Тарифы и расписание</h2>
-    ${block("Клуб МАБ, Сокол", "Цена в таблице — разовое занятие этого слота. Пакеты — ниже.")}
-    ${table(["День", "Занятие", "Время", "Цена"], [
-      ["Понедельник", "Группа до 6", "19:00–20:30", rub(3500)],
-      ["Понедельник", "Группа до 6", "20:40–22:10", rub(3500)],
-      ["Вторник", "«Время МАБ», до 16", "12:00–14:00", rub(2500)],
-      ["Суббота", "«Время МАБ», до 16", "10:00–12:00", rub(2500)],
-      ["Суббота", "Группа до 6", "12:00–13:30", rub(3000)]
-    ])}
+    <h2>Тарифы</h2>
+    ${block("Разовые и пакеты", 'Расписание без цен — <a href="#/shkola/vzroslaya/raspisanie">отдельно</a>. Ниже разовое занятие и пакеты.')}
     ${block("Абонемент", "В таблицах слева дневной, справа безлимит. Дневной: пн–пт, 10:00–17:00. У Тамары Гладской и Ярослава Гладского одна цена, пакетов 10 и 30 нет.")}
     <div class="block"><h3>Цены</h3>
       <div class="tabs">
@@ -551,21 +566,9 @@ const pages = {
     ${block("Архив", "18 октября 2026, свободная пирамида с продолжением. Взнос " + rub(7000) + ", фонд " + rub(400000) + ". Стол оплачивает проигравший.")}
     ${form("Запись", ["Имя", "Телефон"])}`),
 
-  "/turniry/rejting": () => frame("tournaments", "billiardmsk.ru/turniry/rejting/", `
-    <h2>Рейтинг участников, сезон 2026</h2>
-    ${table(["Место", "Участник"], [
-      ["1", "Коротков Максим"],
-      ["2", "Фотеев Павел"],
-      ["3", "Гаврилов Алексей"],
-      ["4", "Трояновский Кирилл"],
-      ["5", "Ильясова Ринат"],
-      ["6", "Голикова Елена"],
-      ["7", "Копров Дмитрий"],
-      ["8", "Мирпулатов Марат"],
-      ["9", "Горловский Дмитрий"],
-      ["10", "Нехорошев Денис"]
-    ])}
-    ${block("Дальше", "На странице турниров список продолжается.")}`),
+  "/turniry/rejting": () => frame("tournaments", "mabplay.ru/rating", `
+    <h2>Рейтинг</h2>
+    ${block("Где смотреть", 'Клубный рейтинг живёт в МАБплей и меняется после каждого турнира. Старого списка на сайте школы больше нет. Откройте <a href="https://mabplay.ru/rating">рейтинг МАБплей</a> и выберите вкладку «Клубные».')}`),
 
   "/vyezdy": () => frame("trips", "billiardmsk.ru/vyezdy/", `
     <h2>Выезды</h2>
@@ -706,27 +709,51 @@ const pages = {
 
   "/franshiza": () => frame("franchise", "billiardmsk.ru/franshiza/", `
     <h2>Франшиза</h2>
-    ${block("Что открывается", "Клуб и школа МАБ в другом городе.")}`),
+    ${block("Предложение", "Создай центр бильярдной жизни в\u00a0своём городе. Это франшиза экосистемы, не только бильярдного клуба.")}
+    ${block("Что входит", "Бильярдный клуб. Ресторан. Турниры. Школа для взрослых и\u00a0детей. Магазин. Мастер-классы.")}
+    ${block("Как устроена модель", "Пять направлений: клуб, академия, турниры, выезды, комьюнити. Формула из презентации: членство в\u00a0сообществе, а\u00a0не аренда стола.")}
+    ${block("Задача", "Возродить культуру игры в\u00a0русский бильярд и\u00a0сделать его национальным видом спорта. Партнёр развивает бильярд в\u00a0своём регионе.")}
+    ${block("Цифры из презентации", "5\u00a0000+ учеников. 200+ турниров в\u00a0год. 15\u00a0000+ часов тренировок. 20+ выездов. 530\u00a0000+ подписчиков. Больше 130\u00a0млн просмотров на YouTube. Флагманский клуб 1\u00a0200\u00a0м² в\u00a0Москве.")}
+    ${block("Путь", "2017\u00a0— тренерская работа Ярослава. 2018\u00a0— команда тренеров. 2019\u00a0— первый турнир в\u00a0Москве. 2020\u00a0— YouTube и\u00a0авторская методика. 2021\u00a0— онлайн-школа. 2023\u00a0— первый сбор в\u00a0Сочи. 2025\u00a0— клуб, турниры, взрослая и\u00a0детская школа, выезды, магазин. 2026\u00a0— запуск франшизы.")}
+    <div class="links">
+      <a href="#/franshiza/pakety">Пакеты</a>
+      <a href="#/franshiza/podderzhka">Поддержка</a>
+      <a href="#/franshiza/zayavka">Заявка</a>
+    </div>`),
 
-  "/franshiza/klub": () => frame("franchise", "billiardmsk.ru/franshiza/klub/", `
-    <h2>Клуб</h2>
-    ${block("Клуб МАБ", "В городе франчайзи")}
-    ${form("Заявка", ["Имя", "Город", "Телефон"])}`),
+  "/franshiza/pakety": () => frame("franchise", "billiardmsk.ru/franshiza/pakety/", `
+    <h2>Пакеты</h2>
+    ${table(["", "До 400 метров", "400–800 метров", "Более 800 метров"], [
+      ["Паушальный взнос", "3\u00a0млн\u00a0₽", "4\u00a0млн\u00a0₽", "5\u00a0млн\u00a0₽"],
+      ["Роялти", "4% (+\u00a0каникулы)", "4% (+\u00a0каникулы)", "4% (+\u00a0каникулы)"],
+      ["Инвестиции", "от\u00a015\u00a0млн\u00a0₽", "от\u00a025\u00a0млн\u00a0₽", "от\u00a040\u00a0млн\u00a0₽"],
+      ["Срок окупаемости", "от\u00a018\u00a0месяцев", "от\u00a024\u00a0месяцев", "от\u00a036\u00a0месяцев"],
+      ["Точка безубыточности", "со\u00a02-го месяца", "с\u00a03-го месяца", "с\u00a04-го месяца"]
+    ])}
+    ${block("Модель под город", "Считается отдельная финансовая модель: аренда, цена часа, наценка в\u00a0баре.")}`),
 
-  "/franshiza/shkola": () => frame("franchise", "billiardmsk.ru/franshiza/shkola/", `
-    <h2>Школа</h2>
-    ${block("Школа МАБ", "Взрослые и дети")}
-    ${form("Заявка", ["Имя", "Город", "Телефон"])}`),
+  "/franshiza/podderzhka": () => frame("franchise", "billiardmsk.ru/franshiza/podderzhka/", `
+    <h2>Поддержка</h2>
+    ${block("Запуск", "Подбор и\u00a0аудит локации, дизайн-проект, проверка пожарной сигнализации, вентиляции и\u00a0электрики, сопровождение договора аренды. Скидки на столы и\u00a0инвентарь, меню и\u00a0технологические карты. Финансовая модель и\u00a0календарь запуска, подключение учёта. Обучение партнёра в\u00a0Москве, подбор управляющего, обучение тренеров. Выезд команды на открытие и\u00a0база знаний на весь срок работы.")}
+    ${block("Дальше", "Первые турниры и\u00a0календарь. Контроль качества. Обновление меню. Специальные цены поставщиков для магазина. Стратегические сессии с\u00a0основателем. Учёт и\u00a0ежемесячный разбор. Выезды в\u00a0город партнёра: комьюнити и\u00a0мастер-классы. Помощь с\u00a0отзывами, контентом и\u00a0соцсетями.")}
+    ${block("Медиа", "Анонс после договора. Упоминания в\u00a0соцсетях, кросс-промо с\u00a0клубами сети. Выезд комьюнити на неделю и\u00a0выездные мастер-классы тренеров: открытые уроки, занятия для детей и\u00a0взрослых.")}`),
 
   "/franshiza/zayavka": () => frame("franchise", "billiardmsk.ru/franshiza/zayavka/", `
     <h2>Заявка</h2>
+    ${block("Кого ищем", "Партнёров, которые задают стандарт качества в\u00a0регионе, понимают премиум и\u00a0комьюнити и\u00a0готовы инвестировать от\u00a015\u00a0млн\u00a0₽.")}
+    ${block("Связь", 'Моисеева Юлия. <a href="tel:+79182196690">+7\u00a0918\u00a0219-66-90</a>. <a href="mailto:franch@billiardmsk.ru">franch@billiardmsk.ru</a>. Индивидуальный план для города.')}
     ${form("Заявка", ["Имя", "Город", "Телефон"])}`),
 
   "/online": () => frame("online", "billiardmsk.ru/online/", `
     <h2>Онлайн-обучение</h2>
+    <div class="links">
+      <a href="#/online/osnovy">Онлайн-курсы</a>
+      <a href="#/online/programmy">Программы тренировок</a>
+      <a href="#/online/metodichka">Методичка</a>
+      <a href="#/online/chek-list">Чек-лист</a>
+    </div>
     ${block("Три курса", "Основы русского бильярда, резка чужих шаров, свояки. У каждого курса тарифы «Базовый», «Продвинутый» и «ВИП». Три курса вместе дешевле на 20%: базовый " + rub(10480) + " вместо " + rub(13100) + ", продвинутый " + rub(20080) + " вместо " + rub(25100) + ", ВИП " + rub(38160) + " вместо " + rub(47700) + ".")}
     ${block("Что внутри тарифа", "Базовый: 14 видеоуроков, платформа на 3 месяца, чат с тренером в Telegram на 1 месяц. Продвинутый: 5 видеоуроков, платформа на 3 месяца, клуб бильярдистов на 1 месяц. ВИП: 5 видеоуроков, платформа на 6 месяцев, клуб на 1 месяц. Везде домашние задания, проверка тренером, методичка и рабочая тетрадь. Тренер — КМС, стаж от 5 лет.")}
-    ${block("Программы тренировок", "Их можно собрать под свой уровень. Свободная пирамида, Ярослав Гладский и Мария Мамичева (Карпова): " + rub(4500) + " / " + rub(5950) + " / " + rub(7950) + ". Московская пирамида, Ярослав Гладский и Павел Плотников: " + rub(4200) + " / " + rub(5700) + " / " + rub(7600) + ". Свояки, Ярослав Гладский: " + rub(1900) + " / " + rub(2600) + " / " + rub(5300) + ". Пул: " + rub(4900) + " / " + rub(5900) + " / " + rub(9900) + ". Цены — базовый, продвинутый, ВИП.")}
     ${form("Запись", ["Имя", "Телефон", "Курс"])}`),
 
   "/online/osnovy": () => frame("online", "billiardmsk.ru/online/osnovy/", `
@@ -745,6 +772,24 @@ const pages = {
     <h2>Резка чужих шаров</h2>
     ${block("Тарифы", "Базовый " + rub(4300) + ". Продвинутый " + rub(8300) + ". ВИП " + rub(15900) + ".")}
     ${form("Запись", ["Имя", "Телефон"])}`),
+
+  "/online/programmy": () => frame("online", "billiardmsk.ru/online/programmy/", `
+    <h2>Программы тренировок</h2>
+    ${block("Под свой уровень", "Цены — базовый, продвинутый, ВИП.")}
+    ${table(["Программа", "Кто ведёт", "Базовый", "Продвинутый", "ВИП"], [
+      ["Свободная пирамида", "Ярослав Гладский и Мария Мамичева (Карпова)", rub(4500), rub(5950), rub(7950)],
+      ["Московская пирамида", "Ярослав Гладский и Павел Плотников", rub(4200), rub(5700), rub(7600)],
+      ["Свояки", "Ярослав Гладский", rub(1900), rub(2600), rub(5300)],
+      ["Пул", "", rub(4900), rub(5900), rub(9900)]
+    ])}`),
+
+  "/online/metodichka": () => frame("online", "billiardmsk.ru/online/metodichka/", `
+    <h2>Методичка</h2>
+    ${handbook}`),
+
+  "/online/chek-list": () => frame("online", "billiardmsk.ru/online/chek-list/", `
+    <h2>Чек-лист</h2>
+    ${checklist}`),
 
   "/magazin": () => frame("shop", "shop.billiardmsk.ru/", `
     <h2>Магазин</h2>
@@ -799,23 +844,34 @@ const pages = {
 
   "/associaciya": () => frame("association", "billiardmsk.ru/associaciya/", `
     <h2>Ассоциация</h2>
-    ${block("Кто вступает", "Игроки, тренеры, бильярдные клубы, компании.")}`),
+    <div class="nonprofit"><b>Некоммерческое направление</b><p>Это про спорт и\u00a0федерации, не про деньги. Вступают спортсмены, экспертный совет, бильярдные клубы и\u00a0компании.</p></div>
+    <div class="links">
+      <a href="#/associaciya/sportsmeny">Спортсмены</a>
+      <a href="#/associaciya/sovet">Экспертный совет</a>
+      <a href="#/associaciya/kluby">Клубы</a>
+      <a href="#/associaciya/kompanii">Компании</a>
+    </div>
+    ${form("Заявка на вступление", ["Имя", "Город", "Телефон"])}`),
 
-  "/associaciya/igroki": () => frame("association", "billiardmsk.ru/associaciya/igroki/", `
-    <h2>Игроки</h2>
-    ${form("Заявка", ["Имя", "Телефон", "Город"])}`),
+  "/associaciya/sportsmeny": () => frame("association", "billiardmsk.ru/associaciya/sportsmeny/", `
+    <h2>Спортсмены</h2>
+    ${block("Участники", "Спортсмены ассоциации.")}
+    ${form("Заявка на вступление", ["Имя", "Город", "Телефон"])}`),
 
-  "/associaciya/trenery": () => frame("association", "billiardmsk.ru/associaciya/trenery/", `
-    <h2>Тренеры</h2>
-    ${form("Заявка", ["Имя", "Телефон", "Город"])}`),
+  "/associaciya/sovet": () => frame("association", "billiardmsk.ru/associaciya/sovet/", `
+    <h2>Экспертный совет</h2>
+    ${block("Участники", "Экспертный совет ассоциации.")}
+    ${form("Заявка на вступление", ["Имя", "Город", "Телефон"])}`),
 
   "/associaciya/kluby": () => frame("association", "billiardmsk.ru/associaciya/kluby/", `
-    <h2>Бильярдные клубы</h2>
-    ${form("Заявка", ["Клуб", "Город", "Телефон"])}`),
+    <h2>Клубы</h2>
+    ${block("Участники", "Бильярдные клубы ассоциации.")}
+    ${form("Заявка на вступление", ["Клуб", "Город", "Телефон"])}`),
 
   "/associaciya/kompanii": () => frame("association", "billiardmsk.ru/associaciya/kompanii/", `
     <h2>Компании</h2>
-    ${form("Заявка", ["Компания", "Город", "Телефон"])}`)
+    ${block("Участники", "Компании ассоциации.")}
+    ${form("Заявка на вступление", ["Компания", "Город", "Телефон"])}`)
 };
 
 const prices = {
